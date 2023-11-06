@@ -1,0 +1,11 @@
+
+]	java:S125 "<This block of commented-out lines of code should be removed.(ı£ËÚùÿÿÿÿ8•›¯Î¹1
+]	java:S125C"<This block of commented-out lines of code should be removed.(‹„©ûÿÿÿÿ8–›¯Î¹1
+
+java:S1128"qRemove this unused import 'org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter'.(÷ìïŠ8—›¯Î¹1
+g
+java:S1128"KRemove this unused import 'org.springframework.web.cors.CorsConfiguration'.(î¤·`8—›¯Î¹1
+s
+java:S1128"QRemove this unused import 'org.springframework.web.cors.CorsConfigurationSource'.(ŒºÏøşÿÿÿÿ8—›¯Î¹1
+{
+java:S1128"YRemove this unused import 'org.springframework.web.cors.UrlBasedCorsConfigurationSource'.(µ²İûùÿÿÿÿ8—›¯Î¹1

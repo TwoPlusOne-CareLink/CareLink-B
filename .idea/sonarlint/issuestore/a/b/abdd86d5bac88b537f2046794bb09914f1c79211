@@ -1,0 +1,11 @@
+
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ä»Š”şÿÿÿÿ
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ä»Š”şÿÿÿÿ
+i	java:S116	"TRename this field "ErrorCode" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(àßÈ®
+l	java:S116
+"WRename this field "ErrorMessage" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬›µ
+8
+java:S1165	""Make this "ErrorCode" field final.(àßÈ®
+;
+java:S1165
+"%Make this "ErrorMessage" field final.(¬›µ
