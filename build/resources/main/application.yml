@@ -17,7 +17,7 @@ springdoc:
 
 #oracle
 spring:
-  datasource:
+  datasource: #외부 DB 계정으로 수정 예정
     url: jdbc:oracle:thin:@localhost:1521:orcl
     username: study
     password: study
@@ -25,7 +25,8 @@ spring:
 #MyBatis
 mybatis:
   mapper-locations: mapper/*.xml
-  type-aliases-package: com.careLink #이곳에 MemberDto가 잇어서 나중에 경로말고 MemberDto만 갖다 사용하면됨
+  #이곳에 MemberDto가 잇어서 나중에 경로말고 MemberDto만 갖다 사용하면됨
+  type-aliases-package: com.careLink.**.domain
   configuration:
     map-underscore-to-camel-case: true
 
