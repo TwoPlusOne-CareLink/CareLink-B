@@ -10,5 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignInDto {
-
+    private String id;
+    private String password;
 }
