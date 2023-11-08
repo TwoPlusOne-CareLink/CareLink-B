@@ -1,6 +1,8 @@
 package com.careLink.Member.service;
 
+import com.careLink.Member.domain.LoginResult;
 import com.careLink.Member.domain.MemberDto;
+import com.careLink.Member.domain.SignInDto;
 import com.careLink.Member.mapper.MemberMapper;
 import com.careLink.exception.ErrorException;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,39 @@ public class MemberServiceImpl implements MemberService {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(),"회원가입 실패");
         }
+    }
+
+    @Override // 로그인
+    public LoginResult signIn(SignInDto signInDto) {
+
+        try {
+            MemberDto member = memberMapper.findById(signInDto.getId()).orElse(null); //아이디 일치 여부
+
+            if(member != null) { //아이디는 일치
+                //비밀번호 찾기
+                String encodePassword = member.getPassword(); //db에 저장된 암호화된 비밀번호
+
+                if(!bCryptPasswordEncoder.matches(signInDto.getPassword(), encodePassword)) { //비밀번호 불일치
+                    return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
+                }
+                else {
+//                    String jwtToken = jwtTokenProvider.createToken(member.getId(),member.getMemberId());
+                    //로그인 성공 & 토큰 생성, 리턴
+//                    return jwtToken;
+                    return new LoginResult(HttpStatus.OK.value(), true, member, "토큰");
+                }
+
+            }
+            else {
+                return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(500, "로그인 실패");
+        }
+
+
     }
 
     //아이디 중복 체크
