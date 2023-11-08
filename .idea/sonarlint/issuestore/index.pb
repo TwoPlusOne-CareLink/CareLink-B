@@ -64,3 +64,7 @@ l
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+Y
+)src/main/java/com/careLink/ResultDto.java,2\5\25f7a8178742d3859e4f876a39c0cc8f74d19462
+i
+9src/main/java/com/careLink/Member/domain/LoginResult.java,0\2\024b50ad1333bd030df7ee701e182529cfc1c5d3
