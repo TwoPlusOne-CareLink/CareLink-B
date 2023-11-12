@@ -18,9 +18,9 @@ springdoc:
 #oracle
 spring:
   datasource: #외부 DB 계정으로 수정 예정
-    url: jdbc:oracle:thin:@localhost:1521:orcl
-    username: study
-    password: study
+    url: jdbc:oracle:thin:@kosa402.iptime.org:1521:orcl
+    username: user_gasan_team5
+    password: oracle
     driver-class-name: oracle.jdbc.driver.OracleDriver
 #MyBatis
 mybatis:
