@@ -10,8 +10,8 @@
             select member_seq.nextval from dual
         </selectKey>
         <!-- 회원정보 db 전송 -->
-        INSERT INTO MEMBER(MEMBER_ID, ID, PASSWORD, MEMBER_NAME,  MEMBER_EMAIL, MEMBER_TEL, MEMBER_ADDRESS, ROLE, WITHDRAWAL, AGREE)
-        VALUES (#{memberId}, #{id}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{role}, #{withdrawal}, #{agree})
+        INSERT INTO MEMBER(MEMBER_ID, ID, PASSWORD, MEMBER_NAME,  MEMBER_EMAIL, MEMBER_TEL, MEMBER_ADDRESS, ROLE, WITHDRAWAL, AGREE, AGE, GENDER)
+        VALUES (#{memberId}, #{id}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{role}, #{withdrawal}, #{agree}, #{age}, #{gender})
     </insert>
 
     <select id="findById" parameterType="String" resultType="MemberDto">

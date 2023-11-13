@@ -1,6 +1,6 @@
 package com.careLink.Member.service;
 
-import com.careLink.Member.domain.LoginResult;
+import com.careLink.Member.ReturnData.LoginResult;
 import com.careLink.Member.domain.MemberDto;
 import com.careLink.Member.domain.SignInDto;
 import com.careLink.Member.mapper.MemberMapper;
@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 
 @Service
@@ -27,20 +25,22 @@ public class MemberServiceImpl implements MemberService {
     @Override //회원가입
     public int signUp(MemberDto memberDto) {
         try {
-
+            log.info("아이디 중복체크");
             //아이디 중복체크
             String idCheck = memberDto.getId();
             boolean idcheck = fingById(idCheck); //아이디 존재시 예외처리 됨
 
             if(idcheck) {
+                log.info("아이디 중복임");
                 return -1; //아이디 중복
             }
-
+            log.info("아이디 중복아님");
             String password = memberDto.getPassword();
             password = bCryptPasswordEncoder.encode(password); //비밀번호 암호화
             memberDto.passwordEncoder(password); //암호화한 비밀번호로 교체
-
+            log.info("db에 회원정보 저장");
             memberMapper.save(memberDto);
+            log.info("회원정보 저장 완료");
             return memberDto.getMemberId();
         }
         catch (Exception e) {
@@ -49,38 +49,38 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    @Override // 로그인
-    public LoginResult signIn(SignInDto signInDto) {
-
-        try {
-            MemberDto member = memberMapper.findById(signInDto.getId()).orElse(null); //아이디 일치 여부
-
-            if(member != null) { //아이디는 일치
-                //비밀번호 찾기
-                String encodePassword = member.getPassword(); //db에 저장된 암호화된 비밀번호
-
-                if(!bCryptPasswordEncoder.matches(signInDto.getPassword(), encodePassword)) { //비밀번호 불일치
-                    return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
-                }
-                else {
-//                    String jwtToken = jwtTokenProvider.createToken(member.getId(),member.getMemberId());
-                    //로그인 성공 & 토큰 생성, 리턴
-//                    return jwtToken;
-                    return new LoginResult(HttpStatus.OK.value(), true, member, "토큰");
-                }
-
-            }
-            else {
-                return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ErrorException(500, "로그인 실패");
-        }
-
-
-    }
+//    @Override // 로그인
+//    public LoginResult signIn(SignInDto signInDto) {
+//
+//        try {
+//            MemberDto member = memberMapper.findById(signInDto.getId()).orElse(null); //아이디 일치 여부
+//
+//            if(member != null) { //아이디는 일치
+//                //비밀번호 찾기
+//                String encodePassword = member.getPassword(); //db에 저장된 암호화된 비밀번호
+//
+//                if(!bCryptPasswordEncoder.matches(signInDto.getPassword(), encodePassword)) { //비밀번호 불일치
+//                    return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
+//                }
+//                else {
+////                    String jwtToken = jwtTokenProvider.createToken(member.getId(),member.getMemberId());
+//                    //로그인 성공 & 토큰 생성, 리턴
+////                    return jwtToken;
+//                    return new LoginResult(HttpStatus.OK.value(), true, member, "토큰");
+//                }
+//
+//            }
+//            else {
+//                return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new ErrorException(500, "로그인 실패");
+//        }
+//
+//
+//    }
 
     //아이디 중복 체크
     public boolean fingById(String id) {

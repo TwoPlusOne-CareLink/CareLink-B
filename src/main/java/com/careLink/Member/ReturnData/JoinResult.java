@@ -1,4 +1,4 @@
-package com.careLink.Member.domain;
+package com.careLink.Member.ReturnData;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,10 +8,7 @@ import lombok.Setter;
 @Getter@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResult {
-
+public class JoinResult { //회원 가입
     private int errorCode; //에러코드
     private boolean success; //작업성공여부
-    private MemberDto memberDto; //회원정보
-    private String token; //토큰
 }
