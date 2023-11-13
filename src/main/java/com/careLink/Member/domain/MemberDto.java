@@ -23,6 +23,8 @@ public class MemberDto {
     private int withdrawal; //회원 탈퇴 여부
     private int agree;//필수 동의 여부
     private Date nowdate; //가입 날짜
+    private String age; //나이
+    private String gender; //성별
 
     //회원가입시 역할,회원탈퇴여부 기본값주고 db 전송
     public void join(String memberRole, int memberWithdrawal) {
