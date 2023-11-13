@@ -37,6 +37,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if(bearerToken != null && bearerToken.contains("Bearer")) {
             accessToken = bearerToken.substring(7);
         }
+        else {
+            //Query String 형태로 넘어왔을 경우
+            //<img src="battach/3?accessToken=xxx" />
+            //src={`http://localhost:8080/board/battach/${board.bno}?accessToken=${appContext.accessToken}`}
+            accessToken = request.getParameter("accessToken");
+        }
 
         //유효한 토큰인지 확인
         if(accessToken != null && !accessToken.trim().equals("")) {

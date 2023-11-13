@@ -32,7 +32,7 @@ public class AppUserDetailsService implements UserDetailsService {
 
         log.info("아이디 존재");
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(member.getRole()));
+        authorities.add(new SimpleGrantedAuthority(member.getRole())); //회원정보에서 권한정보를 가져와서 담는다.
 
         AppUserDetails userDetails = new AppUserDetails(member, authorities);
        

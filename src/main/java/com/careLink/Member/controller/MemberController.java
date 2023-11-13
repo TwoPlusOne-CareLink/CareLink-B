@@ -5,6 +5,7 @@ import com.careLink.Member.ReturnData.LoginResult;
 import com.careLink.Member.domain.MemberDto;
 import com.careLink.Member.domain.SignInDto;
 import com.careLink.Member.service.MemberService;
+import com.careLink.security.AppUserDetails;
 import com.careLink.security.JwrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -59,8 +60,12 @@ public class MemberController {
 
         //AccessToken 생성 ---------------------------------------
         String accessToken = jwrUtil.createToken(signInDto.getId());
-        log.info("토큰 : " + accessToken);
-        return new LoginResult(HttpStatus.OK.value(), true, accessToken);
+
+        AppUserDetails appUserDetails = (AppUserDetails) authentication.getPrincipal(); //앞에서 로그인해서 얻은 아이디 값의 회원정보 받아오는 메서드(getPrincipal());
+        MemberDto memberDto = appUserDetails.getMemberDto();
+        String role = memberDto.getRole();
+
+        return new LoginResult(HttpStatus.OK.value(), true, accessToken, role);
     }
 
 }
