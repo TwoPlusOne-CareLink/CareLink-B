@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Log4j2
-public class MemberController {
+public class AuthController {
 
     private final MemberService memberService;
 
@@ -67,5 +67,7 @@ public class MemberController {
 
         return new LoginResult(HttpStatus.OK.value(), true, accessToken, role);
     }
+
+    //---------------------------------------------------------------------------------------------
 
 }

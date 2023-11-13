@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -27,7 +29,8 @@ public class AppUserDetailsService implements UserDetailsService {
         //아이디가 존재하는지 여부 확인후 입력한 비밀번호와 아이디로 불러온 회원정보의 비밀번호 값을 대조
         if(member == null) {
             log.info("아이디가 존재하지 않습니다.");
-            throw new UsernameNotFoundException(username); //아이디가 없을때 예외처리
+            throw new UsernameNotFoundException(username); //아이디가 없을때 예외처리 403
+//            throw new ErrorException(HttpStatus.UNAUTHORIZED.value(), "아이디가 없다."); //401
         }
 
         log.info("아이디 존재");
