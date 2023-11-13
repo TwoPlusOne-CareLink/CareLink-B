@@ -29,6 +29,7 @@ public class AppUserDetailsService implements UserDetailsService {
             log.info("아이디가 존재하지 않습니다.");
             throw new UsernameNotFoundException(username); //아이디가 없을때 예외처리
         }
+
         log.info("아이디 존재");
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(member.getRole()));
