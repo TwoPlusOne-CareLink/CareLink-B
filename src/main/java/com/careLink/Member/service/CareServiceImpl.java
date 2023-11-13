@@ -1,6 +1,6 @@
 package com.careLink.Member.service;
 
-import com.careLink.Member.domain.HospitalDto;
+import com.careLink.Member.vo.HospitalDto;
 import com.careLink.Member.mapper.CareMapper;
 import com.careLink.exception.ErrorException;
 import lombok.RequiredArgsConstructor;

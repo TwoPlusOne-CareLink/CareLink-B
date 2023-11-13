@@ -1,4 +1,4 @@
-package com.careLink.Member.ReturnData;
+package com.careLink.Member.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

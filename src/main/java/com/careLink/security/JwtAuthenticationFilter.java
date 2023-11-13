@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final UserDetailsService userDetailsService;
-    private final JwrUtil jwrUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -46,9 +46,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         //유효한 토큰인지 확인
         if(accessToken != null && !accessToken.trim().equals("")) {
-            if(jwrUtil.validateToken(accessToken)) {
+            if(jwtUtil.validateToken(accessToken)) {
                 //토큰에서 userId 얻기
-                String id = jwrUtil.getId(accessToken); //토큰에서 아이디값 가져오는 메소드 실행해서 아이디 출력
+                String id = jwtUtil.getId(accessToken); //토큰에서 아이디값 가져오는 메소드 실행해서 아이디 출력
                 //DB에서 userId에 해당하는 정보를 가져오기
                 UserDetails userDetails = userDetailsService.loadUserByUsername(id);
                 //인증 객체 생성

@@ -1,6 +1,6 @@
 package com.careLink.security;
 
-import com.careLink.Member.domain.MemberDto;
+import com.careLink.Member.vo.MemberDto;
 import com.careLink.Member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

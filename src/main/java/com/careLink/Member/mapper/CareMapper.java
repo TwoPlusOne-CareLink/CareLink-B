@@ -1,6 +1,6 @@
 package com.careLink.Member.mapper;
 
-import com.careLink.Member.domain.HospitalDto;
+import com.careLink.Member.vo.HospitalDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

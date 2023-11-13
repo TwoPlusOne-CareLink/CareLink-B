@@ -1,7 +1,7 @@
 package com.careLink.Member.controller;
 
-import com.careLink.Member.domain.HospitalDto;
-import com.careLink.Member.ReturnData.HospitalListResult;
+import com.careLink.Member.vo.HospitalDto;
+import com.careLink.Member.result.HospitalListResult;
 import com.careLink.Member.service.CareService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

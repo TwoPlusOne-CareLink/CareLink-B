@@ -18,4 +18,10 @@
         SELECT * FROM MEMBER WHERE ID = #{id}
     </select>
 
+    <select id="counselingMemberById" parameterType="String" resultType="GetRequestCounselingDto">
+        SELECT ID,MEMBER_NAME FROM MEMBER WHERE ID = #{id}
+    </select>
+
+
+
 </mapper>

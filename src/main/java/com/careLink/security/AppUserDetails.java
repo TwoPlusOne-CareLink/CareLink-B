@@ -1,6 +1,6 @@
 package com.careLink.security;
 
-import com.careLink.Member.domain.MemberDto;
+import com.careLink.Member.vo.MemberDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

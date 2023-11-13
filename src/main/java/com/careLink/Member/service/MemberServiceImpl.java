@@ -1,8 +1,7 @@
 package com.careLink.Member.service;
 
-import com.careLink.Member.ReturnData.LoginResult;
-import com.careLink.Member.domain.MemberDto;
-import com.careLink.Member.domain.SignInDto;
+import com.careLink.Member.dto.GetRequestCounselingDto;
+import com.careLink.Member.vo.MemberDto;
 import com.careLink.Member.mapper.MemberMapper;
 import com.careLink.exception.ErrorException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,23 @@ public class MemberServiceImpl implements MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberMapper memberMapper;
 
+    //아이디 중복 체크
+    public boolean fingById(String id) {
+        try {
+            log.info("아이디 중복 체크 : " + id);
+            MemberDto member = memberMapper.findById(id).orElse(null);
+
+            if (member != null) {
+                log.info("아이디가 중복이다.");
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
+        }
+    }
+
     @Override //회원가입
     public int signUp(MemberDto memberDto) {
         try {
@@ -30,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
             String idCheck = memberDto.getId();
             boolean idcheck = fingById(idCheck); //아이디 존재시 예외처리 됨
 
-            if(idcheck) {
+            if (idcheck) {
                 log.info("아이디 중복임");
                 return -1; //아이디 중복
             }
@@ -42,65 +58,19 @@ public class MemberServiceImpl implements MemberService {
             memberMapper.save(memberDto);
             log.info("회원정보 저장 완료");
             return memberDto.getMemberId();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(),"회원가입 실패");
-        }
-    }
-
-//    @Override // 로그인
-//    public LoginResult signIn(SignInDto signInDto) {
-//
-//        try {
-//            MemberDto member = memberMapper.findById(signInDto.getId()).orElse(null); //아이디 일치 여부
-//
-//            if(member != null) { //아이디는 일치
-//                //비밀번호 찾기
-//                String encodePassword = member.getPassword(); //db에 저장된 암호화된 비밀번호
-//
-//                if(!bCryptPasswordEncoder.matches(signInDto.getPassword(), encodePassword)) { //비밀번호 불일치
-//                    return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
-//                }
-//                else {
-////                    String jwtToken = jwtTokenProvider.createToken(member.getId(),member.getMemberId());
-//                    //로그인 성공 & 토큰 생성, 리턴
-////                    return jwtToken;
-//                    return new LoginResult(HttpStatus.OK.value(), true, member, "토큰");
-//                }
-//
-//            }
-//            else {
-//                return new LoginResult(HttpStatus.BAD_REQUEST.value(), false, null, "토큰X");
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new ErrorException(500, "로그인 실패");
-//        }
-//
-//
-//    }
-
-    //아이디 중복 체크
-    public boolean fingById(String id) {
-        try {
-            log.info("아이디 중복 체크 : " + id);
-            MemberDto member = memberMapper.findById(id).orElse(null);
-
-            if(member != null) {
-                log.info("아이디가 중복이다.");
-                return true;
-            }
-
-            return false;
-
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원가입 실패");
         }
-
-
     }
+
+    @Override
+    public GetRequestCounselingDto getCounselingMemberById(String id) {
+        GetRequestCounselingDto getRequestCounselingDto =
+                memberMapper.counselingMemberById(id)
+                        .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "정보 못 받아옴"));
+        return getRequestCounselingDto;
+    }
+
 
 }

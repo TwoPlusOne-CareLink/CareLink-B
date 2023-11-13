@@ -1,4 +1,4 @@
-package com.careLink.Member.domain;
+package com.careLink.Member.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
