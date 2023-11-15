@@ -17,4 +17,8 @@ public interface MemberMapper {
     public int count();
     public List<CounselingEntity> selectCounselingByPage(@Param("pager") CounselingPager pager, @Param("memberId") String memberId);
     public Optional<CounselingDetailDto> selectCounselingDetail(@Param("counselingId") int counselingId);
+    public int checkLike(@Param("memberId")String memberId,@Param("doctorId")String doctorId);
+    public int insertLike(@Param("memberId") String memberId, @Param("doctorId") String doctorId);
+    public int deleteLike(@Param("memberId") String memberId, @Param("doctorId") String doctorId);
+
 }

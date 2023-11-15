@@ -14,4 +14,5 @@ public interface MemberService {
     public int getCount(); //상담개수가져오기
     public List<CounselingEntity> getList(CounselingPager pager, String id); // 내 상담 내역 가져오기
     public CounselingDetailDto getCounselingDetail(int no);
+    public int clickLike(String memberId,String doctorId);
 }

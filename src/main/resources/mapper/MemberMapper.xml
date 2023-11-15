@@ -82,4 +82,37 @@
             c.counseling_id = #{counselingId}
     </select>
 
+
+    <select id="checkLike" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM doctor_like
+        WHERE member_id = #{memberId}
+          AND doctor_id = #{doctorId}
+    </select>
+
+    <insert id="insertLike">
+        <selectKey keyProperty="likeId" order="BEFORE" resultType="int">
+            select doctor_like_seq.nextval from dual
+        </selectKey>
+        INSERT INTO doctor_like (like_id,member_id, doctor_id)
+        VALUES ( #{likeId},#{memberId}, #{doctorId})
+    </insert>
+
+    <delete id="deleteLike" parameterType="String">
+        DELETE FROM doctor_like
+        WHERE member_id = #{memberId}
+          AND doctor_id = #{doctorId}
+    </delete>
+
+<!--    <insert id="like" parameterType="int">-->
+<!--        <choose>-->
+<!--            <when test="">-->
+<!--                -->
+<!--            </when>-->
+<!--            <otherwise>-->
+<!--                -->
+<!--            </otherwise>-->
+<!--        </choose>-->
+<!--    </insert>-->
+
+
 </mapper>

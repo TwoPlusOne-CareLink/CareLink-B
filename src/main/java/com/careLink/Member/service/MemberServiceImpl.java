@@ -22,10 +22,10 @@ import java.util.List;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
+
     @Override //상담신청 페이지(회원정보넣기)
     public GetRequestCounselingDto getCounselingMemberById(String id) {
-        GetRequestCounselingDto getRequestCounselingDto = memberMapper.counselingMemberById(id).orElseThrow(()
-                -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "정보 못 받아옴"));
+        GetRequestCounselingDto getRequestCounselingDto = memberMapper.counselingMemberById(id).orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "정보 못 받아옴"));
         return getRequestCounselingDto;
     }
 
@@ -60,9 +60,41 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public CounselingDetailDto getCounselingDetail(int no) {
-        CounselingDetailDto counselingDetailDto = memberMapper.selectCounselingDetail(no)
-                .orElseThrow(()-> new ErrorException(HttpStatus.BAD_REQUEST.value(), "정보 못 받아옴"));
+        CounselingDetailDto counselingDetailDto = memberMapper.selectCounselingDetail(no).orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "정보 못 받아옴"));
         return counselingDetailDto;
+    }
+
+    @Override //좋아요 클릭했을 때 likeCheck 메소드 실행값에 따라 추가 or 삭제
+    public int clickLike(String memberId, String doctorId) {
+
+        int likeCount = likeCheck(memberId, doctorId);
+        int result = 0;
+
+        try {
+            //좋아요 삭제 또는 추가 실행
+            if (likeCount == 1) {
+                memberMapper.deleteLike(memberId, doctorId);
+                result = 0;
+            } else {
+                memberMapper.insertLike(memberId, doctorId);
+                result = 1;
+            }
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "좋아요 실행 실패");
+        }
+
+    }
+//  좋아요 체크
+    public int likeCheck(String memberId, String doctorId) {
+        try {
+            return memberMapper.checkLike(memberId, doctorId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "좋아요 여부 체크 실패");
+        }
     }
 
 }

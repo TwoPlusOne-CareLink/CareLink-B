@@ -6,10 +6,7 @@ import com.careLink.entity.CounselingPager;
 import com.careLink.exception.ErrorException;
 import com.careLink.member.dto.CounselingDetailDto;
 import com.careLink.member.dto.GetRequestCounselingDto;
-import com.careLink.member.result.CounselingListResult;
-import com.careLink.member.result.CounselingResult;
-import com.careLink.member.result.GetRequestCounselingResult;
-import com.careLink.member.result.PostResult;
+import com.careLink.member.result.*;
 import com.careLink.member.service.MemberService;
 import com.careLink.security.AppUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -72,16 +69,24 @@ public class MemberController {
         return new CounselingListResult(HttpStatus.OK.value(), true, map);
     }
 
-    @GetMapping("/counselingDetail/{no}")
-    public CounselingResult getCounSelingDetail(@PathVariable int no) {
+    @GetMapping("/counselingDetail")
+    public CounselingResult getCounSelingDetail(@RequestParam int counselingId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
-
-        CounselingDetailDto dto = memberService.getCounselingDetail(no);
-
+        log.info("id " + id);
+        log.info("no " + counselingId);
+        CounselingDetailDto dto = memberService.getCounselingDetail(counselingId);
+        log.info(dto.toString());
         if (!id.equals(dto.getPatientId())) throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "자신의 정보 아님");
 
         return new CounselingResult(HttpStatus.OK.value(), true, dto);
     }
 
+    @PostMapping("/counselingDetail/counselingLike")
+    public LikeResult clickLike(@RequestParam String doctorId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+        int like = memberService.clickLike(memberId, doctorId);
+        return new LikeResult(HttpStatus.OK.value(), true, like);
+    }
 }
