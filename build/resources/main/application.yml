@@ -27,11 +27,17 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
+#FileUpload
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+
 #MyBatis
 mybatis:
   mapper-locations: mapper/*.xml
   #이곳에 MemberDto가 잇어서 나중에 경로말고 MemberDto만 갖다 사용하면됨
-  type-aliases-package: com.careLink.**.domain
+  type-aliases-package: com.careLink.entity, com.careLink.**.dto
   configuration:
     map-underscore-to-camel-case: true
 
