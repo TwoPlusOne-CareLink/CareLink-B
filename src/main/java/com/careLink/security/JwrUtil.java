@@ -1,11 +1,15 @@
 package com.careLink.security;
 
+import com.careLink.exception.ErrorException;
 import io.jsonwebtoken.*;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
+@Log4j2
 @Component
 public class JwrUtil {
 
@@ -14,20 +18,26 @@ public class JwrUtil {
 
     // 토큰 생성
     // JWT 토큰 생성: 사용자 아이디 포함
-    public static String createToken(String id) {
+    public static String createToken(String memberId) {
+        log.info("토큰생성 들어옴");
+        log.info("아이디 : " + memberId);
         String token = null;
         try {
             JwtBuilder builder = Jwts.builder();
             builder.setHeaderParam("typ", "JWT"); //토큰의 종류
             builder.setHeaderParam("alg", "HS256"); //암호화 알고리즘 종류
             builder.setExpiration(new Date(new Date().getTime() + 1000*60*60*12)); //토큰의 유효기간(12시간)
-            builder.claim("id", id); //토큰에 저장되는 데이터
+            builder.claim("memberId", memberId); //토큰에 저장되는 데이터
             builder.signWith(SignatureAlgorithm.HS256, secretKey.getBytes("UTF-8")); //비밀키
+            log.info("토큰 시발 : " + memberId);
             token = builder.compact(); //모든 내용을 묶기
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "토큰생성 실패");
             //토큰생성 실패에 따른 예외처리
         }
+
+        log.info("토큰좀 만들었냐? : " + token);
         return token;
     }
 
@@ -53,7 +63,7 @@ public class JwrUtil {
             parser.setSigningKey(secretKey.getBytes("UTF-8"));
             Jws<Claims> jws = parser.parseClaimsJws(token);
             Claims claims = jws.getBody();
-            id = claims.get("id", String.class);
+            id = claims.get("memberId", String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
