@@ -1,27 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.careLink.Member.mapper.MemberMapper">
+<mapper namespace="com.careLink.member.mapper.MemberMapper">
 
-    <!--회원가입 -->
-    <insert id="save">
-        <!-- 회원가입 후 생성되는 회원 고유번호 반환 -->
-        <selectKey keyProperty="memberId" order="BEFORE" resultType="int">
-            select member_seq.nextval from dual
+
+    <!-- 상담을 위해 시큐리티에서 아이디받아와서 회원정보가져오기 -->
+    <select id="counselingMemberById" parameterType="String" resultType="GetRequestCounselingDto">
+        SELECT MEMBER_ID,MEMBER_NAME FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 상담신청 저장 -->
+    <insert id="saveCounseling" parameterType="CounselingEntity">
+        <!-- 상담저장직전 생성되는 상담 고유번호 반환 -->
+        <selectKey keyProperty="counselingId" order="BEFORE" resultType="int">
+            select counseling_seq.nextval from dual
         </selectKey>
-        <!-- 회원정보 db 전송 -->
-        INSERT INTO MEMBER(MEMBER_ID, ID, PASSWORD, MEMBER_NAME,  MEMBER_EMAIL, MEMBER_TEL, MEMBER_ADDRESS, ROLE, WITHDRAWAL, AGREE, AGE, GENDER)
-        VALUES (#{memberId}, #{id}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{role}, #{withdrawal}, #{agree}, #{age}, #{gender})
+        <!-- 상담 db 전송 -->
+        INSERT INTO COUNSELING(COUNSELING_ID, COUNSELING_TITLE, MEMBER_ID, DEPARTMENT_ID, COUNSELING_CONTENT,COUNSELING_IMAGE_NAME ,COUNSELING_IMAGE)
+        VALUES (#{counselingId}, #{counselingTitle}, #{memberId}, #{departmentId}, #{counselingContent},#{counselingImageName, jdbcType=VARCHAR} ,#{counselingImage, jdbcType=BLOB})
     </insert>
 
-    <select id="findById" parameterType="String" resultType="MemberDto">
-        SELECT * FROM MEMBER WHERE ID = #{id}
-    </select>
-
-    <select id="counselingMemberById" parameterType="String" resultType="GetRequestCounselingDto">
-        SELECT ID,MEMBER_NAME FROM MEMBER WHERE ID = #{id}
+    <!-- 게시글 개수 -->
+    <select id="count" resultType="int">
+        select count(*) from counseling
     </select>
 
 
+    <!-- 나의 상담 내역 불러오기-->
+    <select id="selectCounselingByPage"  resultType="CounselingEntity">
+      <![CDATA[
+        select rnum, counseling_id, counseling_title, member_id,department_id,counseling_content,counseling_date,counseling_image,counseling_image_name
+        from (
+                 select rownum as rnum, counseling_id, counseling_title, member_id,department_id,counseling_content,counseling_date,counseling_image,counseling_image_name
+                 from (
+                          select counseling_id, counseling_title, member_id,department_id,counseling_content,counseling_date,counseling_image,counseling_image_name
+                          from counseling
+                          where member_id = #{memberId}
+                          order by counseling_id desc
+                      )
+                 where rownum <= #{pager.endRowNo}
+             )
+        where rnum >= #{pager.startRowNo}
+        ]]>
+   </select>
+
+<!-- 내 상담 상세 내역-->
+    <select id="selectCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
+        SELECT
+            m.member_id AS patient_id, -- 환자 아이디
+            c.counseling_id, -- 상담 고유 번호
+            c.counseling_title, -- 상담 제목
+            c.counseling_content, -- 상담 내용
+            c.counseling_image, -- 상담 이미지
+            c.counseling_image_name, -- 상담 이미지 이름
+            d.img_file AS doctor_image, -- 의사 이미지
+            d.file_name AS doctor_image_name, -- 의사 이미지 이름
+            dm.member_id AS doctor_id, -- 의사 아이디
+            dm.member_name AS doctor_name, -- 의사 이름
+            department.department_name, -- 의사 진료과목
+            cr.reply_id, -- 댓글 고유번호
+            cr.comment_content, -- 댓글 내용
+            CASE
+                WHEN dl.doctor_id IS NOT NULL THEN 1 -- 좋아요가 있다면 1 표시
+                ELSE 0 -- 좋아요가 없다면 0 표시
+                END AS liked_by_patient -- 환자가 의사를 좋아요 눌렀는지 여부
+        FROM
+            counseling c
+                JOIN
+            member m ON c.member_id = m.member_id
+                JOIN
+            counseling_reply cr ON c.counseling_id = cr.counseling_id
+                JOIN
+            doctor_info d ON cr.member_id = d.member_id
+                JOIN
+            member dm ON d.member_id = dm.member_id
+                JOIN
+            department ON d.department_id = department.department_id
+                LEFT JOIN
+            doctor_like dl ON dm.member_id = dl.doctor_id AND m.member_id = dl.member_id
+        WHERE
+            c.counseling_id = #{counselingId}
+    </select>
 
 </mapper>

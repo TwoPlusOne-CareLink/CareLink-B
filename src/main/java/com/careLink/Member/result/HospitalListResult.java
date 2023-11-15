@@ -1,6 +1,6 @@
-package com.careLink.Member.result;
+package com.careLink.member.result;
 
-import com.careLink.Member.vo.HospitalDto;
+import com.careLink.member.dto.HospitalInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ public class HospitalListResult { //병원 목록
 
     private int errorCode; //에러코드
     private boolean success; //작업성공여부
-    private List<HospitalDto> hospitalList; // 병원 목록
+    private List<HospitalInfoDto> hospitalList; // 병원 목록
 
 }

@@ -1,6 +1,6 @@
-package com.careLink.Member.mapper;
+package com.careLink.member.mapper;
 
-import com.careLink.Member.vo.HospitalDto;
+import com.careLink.entity.HospitalEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 //붱원찾기(예약), 일일체크
 @Mapper
 public interface CareMapper {
-    public List<HospitalDto> hospitalInfo(); //병원 목록
+    public List<HospitalEntity> hospitalSelect(); //병원 목록
 
     //병원 검색
 

@@ -1,13 +1,11 @@
-package com.careLink.Member.result;
+package com.careLink.member.result;
 
-import com.careLink.Member.dto.GetRequestCounselingDto;
+import com.careLink.member.dto.GetRequestCounselingDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetRequestCounselingResult {

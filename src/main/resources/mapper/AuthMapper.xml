@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.careLink.auth.mapper.AuthMapper">
+
+    <!--회원가입 -->
+    <insert id="join">
+        <!-- 회원가입 후 생성되는 회원 고유번호 반환 -->
+        <selectKey keyProperty="memberNo" order="BEFORE" resultType="int">
+            SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        <!-- 회원정보 db 전송 -->
+        INSERT INTO MEMBER(MEMBER_NO, MEMBER_ID, PASSWORD, MEMBER_NAME, MEMBER_EMAIL, MEMBER_TEL, MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, ROLE, WITHDRAWAL, AGREE, AGE, GENDER)
+        VALUES (#{memberNo}, #{memberId}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{memberAddressDetail}, #{role}, #{withdrawal}, #{agree}, #{age}, #{gender})
+    </insert>
+
+    <select id="findById" parameterType="String" resultType="com.careLink.entity.MemberEntity">
+        SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </select>
+
+</mapper>
