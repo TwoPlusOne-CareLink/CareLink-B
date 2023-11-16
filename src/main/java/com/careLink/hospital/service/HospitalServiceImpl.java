@@ -43,7 +43,7 @@ public class HospitalServiceImpl implements HospitalService{
         //member테이블
 
         MemberEntity member = new MemberEntity(doctor.getMemberId(), password, doctor.getMemberName(),
-                                                doctor.getMemberName(), doctor.getMemberTel(), doctor.getMemberAddress(), doctor.getMemberAddressDetail(),
+                                                doctor.getMemberEmail(), doctor.getMemberTel(), doctor.getMemberAddress(), doctor.getMemberAddressDetail(),
                                                 role, 1, doctor.getAgree(), doctor.getAge(), doctor.getGender() );
 
         join(member); //의사회원정보 member 테이블에 저장

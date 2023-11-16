@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/requestCounseling", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //비대면상담신청(회원)
-    public PostResult postRequestCounseling(@RequestPart MultipartFile attach, CounselingEntity counselingDto) {
+    public PostResult postRequestCounseling(@RequestPart(value="file",required = false) MultipartFile attach, CounselingEntity counselingDto) {
 //      아이디 받아옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
@@ -69,7 +69,7 @@ public class MemberController {
         return new CounselingListResult(HttpStatus.OK.value(), true, map);
     }
 
-    @GetMapping("/counselingDetail")
+    @GetMapping("/counselingDetail") //상담상세정보
     public CounselingResult getCounSelingDetail(@RequestParam int counselingId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
@@ -82,7 +82,7 @@ public class MemberController {
         return new CounselingResult(HttpStatus.OK.value(), true, dto);
     }
 
-    @PostMapping("/counselingDetail/counselingLike")
+    @PostMapping("/counselingDetail/counselingLike") //상담의사 좋아요
     public LikeResult clickLike(@RequestParam String doctorId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();

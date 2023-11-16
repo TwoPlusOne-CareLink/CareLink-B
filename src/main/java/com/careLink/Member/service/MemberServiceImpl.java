@@ -31,19 +31,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override //상담신청
     public int saveCounseling(CounselingEntity counselingEntity) {
-        if (counselingEntity.getAttach() != null && !counselingEntity.getAttach().isEmpty()) {
-            MultipartFile mf = counselingEntity.getAttach();
-            counselingEntity.setCounselingImageName(mf.getOriginalFilename());
-            try {
+        try {
+            if (counselingEntity.getAttach() != null && !counselingEntity.getAttach().isEmpty()) {
+                MultipartFile mf = counselingEntity.getAttach();
+                counselingEntity.setCounselingImageName(mf.getOriginalFilename());
+
                 counselingEntity.setCounselingImage(mf.getBytes());
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "이미지 저장 실패");
-            }
+
             memberMapper.saveCounseling(counselingEntity);
 
-        }
+        }else {
+                counselingEntity.setCounselingImage(null);
+                counselingEntity.setCounselingImageName(null);
+                memberMapper.saveCounseling(counselingEntity);
 
+                log.info("이미지없음");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "이미지 저장 실패");
+        }
         log.info("상담정보 저장 완료");
         return counselingEntity.getCounselingId();
     }
@@ -59,8 +67,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public CounselingDetailDto getCounselingDetail(int no) {
-        CounselingDetailDto counselingDetailDto = memberMapper.selectCounselingDetail(no).orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "정보 못 받아옴"));
+    public CounselingDetailDto getCounselingDetail(int no) {  //상세정보받기
+
+        CounselingDetailDto counselingDetailDto = memberMapper.selectCounselingDetail(no)
+                .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "상세 정보 못 받아옴"));
         return counselingDetailDto;
     }
 
