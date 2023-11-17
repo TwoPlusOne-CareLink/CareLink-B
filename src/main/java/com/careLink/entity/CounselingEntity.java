@@ -1,5 +1,6 @@
 package com.careLink.entity;
 
+import com.careLink.member.dto.CounselingResultDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

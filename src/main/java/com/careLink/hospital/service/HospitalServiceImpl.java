@@ -33,7 +33,7 @@ public class HospitalServiceImpl implements HospitalService{
     }
 
     @Override//의사등록
-    public void signup(DoctorEntity doctor) {
+    public int signup(DoctorEntity doctor) {
         log.info("의사등록 서비스 들어옴");
         String role = "ROLE_DOCTOR"; //의사 권한
         log.info("입력한 비밀번호 : " + doctor.getPassword());
@@ -48,6 +48,7 @@ public class HospitalServiceImpl implements HospitalService{
 
         join(member); //의사회원정보 member 테이블에 저장
         log.info("멤버테이블에는 전송 성공");
+        int memberNo = member.getMemberNo();
         //의사 정보 테이블
         DoctorInfoEntity doctorinfo;
 
@@ -62,6 +63,7 @@ public class HospitalServiceImpl implements HospitalService{
             }
             
             hospitalMapper.upload(doctorinfo); //의사 정보를 테이블에 저장
+            return memberNo;
 
         }catch (Exception e) {
             e.printStackTrace();

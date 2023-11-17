@@ -25,7 +25,6 @@
         select count(*) from counseling
     </select>
 
-
     <!-- 나의 상담 내역 불러오기-->
     <select id="selectCounselingByPage"  resultType="CounselingEntity">
       <![CDATA[
@@ -44,8 +43,32 @@
         ]]>
    </select>
 
-<!-- 내 상담 상세 내역-->
-    <select id="selectCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
+    <!-- 상담에 댓글이 달렸나 확인-->
+    <select id="checkReply">
+        select count(*) from counseling_reply
+        where counseling_id =#{counselingId}
+    </select>
+
+<!-- 댓글이 없을때 나의 상담 내역 불러오기-->
+    <select id="noReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
+        SELECT
+            c.member_id AS patient_id,
+            c.counseling_id,
+            c.counseling_title,
+            c.counseling_content,
+            c.counseling_image,
+            c.counseling_image_name,
+            r.reply_id
+        FROM
+            counseling c
+                left JOIN
+            counseling_reply r ON c.counseling_id = r.counseling_id
+        WHERE
+            c.counseling_id = #{counselingId}
+    </select>
+
+<!-- 댓글이 있을때 내 상담 상세 내역-->
+    <select id="yesReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
         SELECT
             m.member_id AS patient_id, -- 환자 아이디
             c.counseling_id, -- 상담 고유 번호

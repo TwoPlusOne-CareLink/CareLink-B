@@ -25,7 +25,7 @@ public class HospitalController {
     @PostMapping(value = "/doctorAdd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)//의사 등록
     public DoctorJoinResult doctorAdd(@RequestPart MultipartFile file, DoctorEntity doctor) {
         log.info("의사등록 : " + doctor.getMemberName());
-        hospitalService.signup(doctor);
-        return new DoctorJoinResult(HttpStatus.OK.value(), true, 1);
+        int memberNo= hospitalService.signup(doctor);
+        return new DoctorJoinResult(HttpStatus.OK.value(), true, memberNo);
     }
 }
