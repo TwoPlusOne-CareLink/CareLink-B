@@ -1,9 +1,9 @@
 package com.careLink.member.service;
 
+import com.careLink.common.Common;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
 import com.careLink.exception.ErrorException;
-import com.careLink.base64.ImgUtil;
 import com.careLink.member.dto.CounselingDetailDto;
 import com.careLink.member.dto.CounselingDetailResultDto;
 import com.careLink.member.dto.CounselingResultDto;
@@ -26,7 +26,7 @@ import java.util.List;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
-    private final ImgUtil imgUtil;
+    private final Common common;
 
     @Override //상담신청 페이지(회원정보넣기)
     public GetRequestCounselingDto getCounselingMemberById(String id) {
@@ -77,13 +77,13 @@ public class MemberServiceImpl implements MemberService {
                 if (counselingEntity.getCounselingImage() == null) {
                     base64Image = null;
                 } else {
-                    base64Image = imgUtil.convertImageToBase64(counselingEntity.getCounselingImage());
+                    base64Image = common.convertImageToBase64(counselingEntity.getCounselingImage());
 
                 }
 
                 // base64로 인코딩된 이미지를 새로운 DTO에 설정
                 CounselingResultDto resultDto = new CounselingResultDto();
-                resultDto.ToResult(counselingEntity, base64Image);
+                resultDto.toResult(counselingEntity, base64Image);
                 resultList.add(resultDto);
 
             }
@@ -105,13 +105,13 @@ public class MemberServiceImpl implements MemberService {
                         .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "상세 정보 못 받아옴"));
                 if (counselingDetailDto.getCounselingImage() == null) { //댓글있고, 상담사진없으면
                     log.info("댓글있는데 회원이미지없");
-                    doctorBase64Image = imgUtil.convertImageToBase64(counselingDetailDto.getDoctorImage());
+                    doctorBase64Image = common.convertImageToBase64(counselingDetailDto.getDoctorImage());
 
                     resultDto.YesImageToResult(counselingDetailDto, null, doctorBase64Image);
 
                 } else { //댓글있고 사진있을때
-                    counselingBase64Image = imgUtil.convertImageToBase64(counselingDetailDto.getCounselingImage());
-                    doctorBase64Image = imgUtil.convertImageToBase64(counselingDetailDto.getDoctorImage());
+                    counselingBase64Image = common.convertImageToBase64(counselingDetailDto.getCounselingImage());
+                    doctorBase64Image = common.convertImageToBase64(counselingDetailDto.getDoctorImage());
                     resultDto.YesImageToResult(counselingDetailDto, counselingBase64Image, doctorBase64Image);
                 }
 
@@ -124,7 +124,7 @@ public class MemberServiceImpl implements MemberService {
                     resultDto.YesImageToResult(counselingDetailDto, null, null);
 
                 } else { //댓글없고 사진있을때
-                    counselingBase64Image = imgUtil.convertImageToBase64(counselingDetailDto.getCounselingImage());
+                    counselingBase64Image = common.convertImageToBase64(counselingDetailDto.getCounselingImage());
                     resultDto.YesImageToResult(counselingDetailDto, counselingBase64Image, null);
                 }
 

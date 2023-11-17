@@ -21,7 +21,7 @@ public class CounselingResultDto {
     private String counselingImage;
     private String counselingImageName;
 
-    public void ToResult(CounselingEntity counselingEntity, String base64Img) {
+    public void toResult(CounselingEntity counselingEntity, String base64Img) {
           counselingId = counselingEntity.getCounselingId();
           counselingTitle = counselingEntity.getCounselingTitle();
           memberId = counselingEntity.getMemberId();

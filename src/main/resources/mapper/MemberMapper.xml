@@ -13,7 +13,7 @@
     <insert id="saveCounseling" parameterType="CounselingEntity">
         <!-- 상담저장직전 생성되는 상담 고유번호 반환 -->
         <selectKey keyProperty="counselingId" order="BEFORE" resultType="int">
-            select counseling_seq.nextval from dual
+            SELECT COUNSELING_SEQ.NEXTVAL FROM DUAL
         </selectKey>
         <!-- 상담 db 전송 -->
         INSERT INTO COUNSELING(COUNSELING_ID, COUNSELING_TITLE, MEMBER_ID, DEPARTMENT_ID, COUNSELING_CONTENT,COUNSELING_IMAGE_NAME ,COUNSELING_IMAGE)
@@ -22,108 +22,109 @@
 
     <!-- 게시글 개수 -->
     <select id="count" resultType="int">
-        select count(*) from counseling
+        SELECT COUNT(*) FROM COUNSELING
     </select>
 
     <!-- 나의 상담 내역 불러오기-->
     <select id="selectCounselingByPage"  resultType="CounselingEntity">
       <![CDATA[
-        select rnum, counseling_id, counseling_title, member_id,department_id,counseling_content,counseling_date,counseling_image,counseling_image_name
-        from (
-                 select rownum as rnum, counseling_id, counseling_title, member_id,department_id,counseling_content,counseling_date,counseling_image,counseling_image_name
-                 from (
-                          select counseling_id, counseling_title, member_id,department_id,counseling_content,counseling_date,counseling_image,counseling_image_name
-                          from counseling
-                          where member_id = #{memberId}
-                          order by counseling_id desc
+        SELECT RNUM, COUNSELING_ID, COUNSELING_TITLE, MEMBER_ID,DEPARTMENT_ID,COUNSELING_CONTENT,COUNSELING_DATE,COUNSELING_IMAGE,COUNSELING_IMAGE_NAME
+        FROM (
+                 SELECT ROWNUM AS RNUM, COUNSELING_ID, COUNSELING_TITLE, MEMBER_ID,DEPARTMENT_ID,COUNSELING_CONTENT,COUNSELING_DATE,COUNSELING_IMAGE,COUNSELING_IMAGE_NAME
+                 FROM (
+                          SELECT COUNSELING_ID, COUNSELING_TITLE, MEMBER_ID,DEPARTMENT_ID,COUNSELING_CONTENT,COUNSELING_DATE,COUNSELING_IMAGE,COUNSELING_IMAGE_NAME
+                          FROM COUNSELING
+                          WHERE MEMBER_ID = #{memberId}
+                          ORDER BY COUNSELING_ID DESC
                       )
-                 where rownum <= #{pager.endRowNo}
+                 WHERE ROWNUM <= #{pager.endRowNo}
              )
-        where rnum >= #{pager.startRowNo}
+        WHERE RNUM >= #{pager.startRowNo}
         ]]>
    </select>
 
     <!-- 상담에 댓글이 달렸나 확인-->
     <select id="checkReply">
-        select count(*) from counseling_reply
-        where counseling_id =#{counselingId}
+        SELECT COUNT(*)
+        FROM COUNSELING_REPLY
+        WHERE COUNSELING_ID = #{counselingId}
     </select>
 
 <!-- 댓글이 없을때 나의 상담 내역 불러오기-->
     <select id="noReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
         SELECT
-            c.member_id AS patient_id,
-            c.counseling_id,
-            c.counseling_title,
-            c.counseling_content,
-            c.counseling_image,
-            c.counseling_image_name,
-            r.reply_id
+            C.MEMBER_ID AS PATIENT_ID,
+            C.COUNSELING_ID,
+            C.COUNSELING_TITLE,
+            C.COUNSELING_CONTENT,
+            C.COUNSELING_IMAGE,
+            C.COUNSELING_IMAGE_NAME,
+            R.REPLY_ID
         FROM
-            counseling c
-                left JOIN
-            counseling_reply r ON c.counseling_id = r.counseling_id
+            COUNSELING C
+                LEFT JOIN
+            COUNSELING_REPLY R ON C.COUNSELING_ID = R.COUNSELING_ID
         WHERE
-            c.counseling_id = #{counselingId}
+            C.COUNSELING_ID = #{counselingId}
     </select>
 
 <!-- 댓글이 있을때 내 상담 상세 내역-->
     <select id="yesReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
         SELECT
-            m.member_id AS patient_id, -- 환자 아이디
-            c.counseling_id, -- 상담 고유 번호
-            c.counseling_title, -- 상담 제목
-            c.counseling_content, -- 상담 내용
-            c.counseling_image, -- 상담 이미지
-            c.counseling_image_name, -- 상담 이미지 이름
-            d.img_file AS doctor_image, -- 의사 이미지
-            d.file_name AS doctor_image_name, -- 의사 이미지 이름
-            dm.member_id AS doctor_id, -- 의사 아이디
-            dm.member_name AS doctor_name, -- 의사 이름
-            department.department_name, -- 의사 진료과목
-            cr.reply_id, -- 댓글 고유번호
-            cr.comment_content, -- 댓글 내용
+            M.MEMBER_ID AS PATIENT_ID, -- 환자 아이디
+            C.COUNSELING_ID, -- 상담 고유 번호
+            C.COUNSELING_TITLE, -- 상담 제목
+            C.COUNSELING_CONTENT, -- 상담 내용
+            C.COUNSELING_IMAGE, -- 상담 이미지
+            C.COUNSELING_IMAGE_NAME, -- 상담 이미지 이름
+            D.IMG_FILE AS DOCTOR_IMAGE, -- 의사 이미지
+            D.FILE_NAME AS DOCTOR_IMAGE_NAME, -- 의사 이미지 이름
+            DM.MEMBER_ID AS DOCTOR_ID, -- 의사 아이디
+            DM.MEMBER_NAME AS DOCTOR_NAME, -- 의사 이름
+            DEPARTMENT.DEPARTMENT_NAME, -- 의사 진료과목
+            CR.REPLY_ID, -- 댓글 고유번호
+            CR.COMMENT_CONTENT, -- 댓글 내용
             CASE
-                WHEN dl.doctor_id IS NOT NULL THEN 1 -- 좋아요가 있다면 1 표시
+                WHEN DL.DOCTOR_ID IS NOT NULL THEN 1 -- 좋아요가 있다면 1 표시
                 ELSE 0 -- 좋아요가 없다면 0 표시
-                END AS liked_by_patient -- 환자가 의사를 좋아요 눌렀는지 여부
+                END AS LIKED_BY_PATIENT -- 환자가 의사를 좋아요 눌렀는지 여부
         FROM
-            counseling c
+            COUNSELING C
                 JOIN
-            member m ON c.member_id = m.member_id
+            MEMBER M ON C.MEMBER_ID = M.MEMBER_ID
                 JOIN
-            counseling_reply cr ON c.counseling_id = cr.counseling_id
+            COUNSELING_REPLY CR ON C.COUNSELING_ID = CR.COUNSELING_ID
                 JOIN
-            doctor_info d ON cr.member_id = d.member_id
+            DOCTOR_INFO D ON CR.MEMBER_ID = D.MEMBER_ID
                 JOIN
-            member dm ON d.member_id = dm.member_id
+            MEMBER DM ON D.MEMBER_ID = DM.MEMBER_ID
                 JOIN
-            department ON d.department_id = department.department_id
+            DEPARTMENT ON D.DEPARTMENT_ID = DEPARTMENT.DEPARTMENT_ID
                 LEFT JOIN
-            doctor_like dl ON dm.member_id = dl.doctor_id AND m.member_id = dl.member_id
+            DOCTOR_LIKE DL ON DM.MEMBER_ID = DL.DOCTOR_ID AND M.MEMBER_ID = DL.MEMBER_ID
         WHERE
-            c.counseling_id = #{counselingId}
+            C.COUNSELING_ID = #{counselingId}
     </select>
 
 
     <select id="checkLike" parameterType="String" resultType="int">
-        SELECT COUNT(*) FROM doctor_like
-        WHERE member_id = #{memberId}
-          AND doctor_id = #{doctorId}
+        SELECT COUNT(*) FROM DOCTOR_LIKE
+        WHERE MEMBER_ID = #{memberId}
+          AND DOCTOR_ID = #{doctorId}
     </select>
 
     <insert id="insertLike">
         <selectKey keyProperty="likeId" order="BEFORE" resultType="int">
-            select doctor_like_seq.nextval from dual
+            SELECT DOCTOR_LIKE_SEQ.NEXTVAL FROM DUAL
         </selectKey>
-        INSERT INTO doctor_like (like_id,member_id, doctor_id)
+        INSERT INTO DOCTOR_LIKE (LIKE_ID,MEMBER_ID, DOCTOR_ID)
         VALUES ( #{likeId},#{memberId}, #{doctorId})
     </insert>
 
     <delete id="deleteLike" parameterType="String">
-        DELETE FROM doctor_like
-        WHERE member_id = #{memberId}
-          AND doctor_id = #{doctorId}
+        DELETE FROM DOCTOR_LIKE
+        WHERE MEMBER_ID = #{memberId}
+          AND DOCTOR_ID = #{doctorId}
     </delete>
 
 <!--    <insert id="like" parameterType="int">-->

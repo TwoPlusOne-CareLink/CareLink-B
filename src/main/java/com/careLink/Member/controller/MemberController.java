@@ -1,25 +1,19 @@
 package com.careLink.member.controller;
 
 
+import com.careLink.common.Common;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
 import com.careLink.exception.ErrorException;
-import com.careLink.member.dto.CounselingDetailDto;
 import com.careLink.member.dto.CounselingDetailResultDto;
 import com.careLink.member.dto.CounselingResultDto;
 import com.careLink.member.dto.GetRequestCounselingDto;
-import com.careLink.member.result.*;
 import com.careLink.member.service.MemberService;
-import com.careLink.security.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,12 +27,12 @@ import java.util.Map;
 @RequestMapping("/user")
 public class MemberController {
 
-    public final MemberService memberService;
+    private final MemberService memberService;
+    private final Common common;
 
     @GetMapping("/requestCounseling")//상담신청페이지(이름,아이디)
     public ResponseEntity<GetRequestCounselingDto> getRequestCounselingDto() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
+        String id = common.memberId();
 
         GetRequestCounselingDto getRequestCounselingDto = memberService.getCounselingMemberById(id);
 
@@ -49,8 +43,7 @@ public class MemberController {
     public ResponseEntity<Integer> postRequestCounseling
             (@RequestPart(value = "file", required = false) MultipartFile attach, CounselingEntity counselingDto) {
 //      아이디 받아옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
+        String id = common.memberId();
         counselingDto.setMemberId(id);
         int counselingId = memberService.saveCounseling(counselingDto);
 
@@ -60,8 +53,7 @@ public class MemberController {
     @GetMapping("/counselingList") //나의 상담 목록
     public ResponseEntity<Map> list(@RequestParam(defaultValue = "1") int pageNo) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
+        String id = common.memberId();
 
         int totalRows = memberService.getCount();
         CounselingPager counselingPager = new CounselingPager(8, 5, totalRows, pageNo);
@@ -76,8 +68,7 @@ public class MemberController {
 
     @GetMapping("/counselingDetail/{counselingId}") //상담상세정보
     public ResponseEntity<CounselingDetailResultDto> getCounSelingDetail(@PathVariable int counselingId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
+        String id = common.memberId();
         log.info("id " + id);
         log.info("no " + counselingId);
         CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId);
@@ -90,9 +81,8 @@ public class MemberController {
 
     @PostMapping("/counselingDetail/counselingLike") //상담의사 좋아요
     public ResponseEntity<Integer> clickLike(@RequestParam String doctorId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String memberId = authentication.getName();
-        int like = memberService.clickLike(memberId, doctorId);
+        String id = common.memberId();
+        int like = memberService.clickLike(id, doctorId);
         return new ResponseEntity<>(like, HttpStatus.OK);
     }
 }
