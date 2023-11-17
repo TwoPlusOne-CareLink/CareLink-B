@@ -2,6 +2,8 @@ package com.careLink.doctor.service;
 
 import com.careLink.common.Common;
 import com.careLink.doctor.dto.DoctorCounselingListDto;
+import com.careLink.doctor.dto.DoctorMyCounselingDto;
+import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
 import com.careLink.doctor.mapper.DoctorMapper;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
@@ -69,6 +71,34 @@ public class DoctorServiceImpl implements DoctorService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "의사의 상담 목록 불러오기 실패");
+        }
+    }
+
+    @Override // 자신이 댓글단 게시물 목록
+    public List<DoctorMyCounselingResultDto> doctorGetMyCounseling(CounselingPager pager, String doctorId) {
+        try {
+            List<DoctorMyCounselingDto> list = doctorMapper.doctorSelectMyCounseling(pager,doctorId);
+            List<DoctorMyCounselingResultDto> resultList = new ArrayList<>();
+            String base64Image;
+            for (DoctorMyCounselingDto doctorMyCounselingDto : list) {
+                // 이미지를 base64로 인코딩
+                if (doctorMyCounselingDto.getCounselingImage() == null) {
+                    base64Image = null;
+                } else {
+                    base64Image = common.convertImageToBase64(doctorMyCounselingDto.getCounselingImage());
+
+                }
+
+                // base64로 인코딩된 이미지를 새로운 DTO에 설정
+                DoctorMyCounselingResultDto resultDto = new DoctorMyCounselingResultDto();
+                resultDto.toResult(doctorMyCounselingDto, base64Image);
+                resultList.add(resultDto);
+
+            }
+            return resultList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "목록 불러오기 실패");
         }
     }
 }

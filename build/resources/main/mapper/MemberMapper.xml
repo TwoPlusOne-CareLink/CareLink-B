@@ -62,7 +62,7 @@
             R.REPLY_ID
         FROM
             COUNSELING C
-                LEFT JOIN
+        LEFT JOIN
             COUNSELING_REPLY R ON C.COUNSELING_ID = R.COUNSELING_ID
         WHERE
             C.COUNSELING_ID = #{counselingId}

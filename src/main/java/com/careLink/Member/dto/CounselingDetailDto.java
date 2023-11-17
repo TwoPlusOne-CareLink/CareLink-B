@@ -21,6 +21,6 @@ public class CounselingDetailDto {
     private String departmentName;
     private int replyId;
     private String commentContent;
-    private int likedByPatient; //
+    private int likedByPatient;
 }
 
