@@ -21,7 +21,6 @@ public class MemberEntity {
     private String memberAddressDetail; //주소
     private String role; //권한
     private int withdrawal; //회원 탈퇴 여부
-    private int agree;//필수 동의 여부
     private Date nowdate; //가입 날짜
     private String age; //나이
     private String gender; //성별
@@ -48,7 +47,6 @@ public class MemberEntity {
         this.memberAddressDetail = memberAddressDetail;
         this.role = role;
         this.withdrawal = withdrawal;
-        this.agree = agree;
         this.age = age;
         this.gender = gender;
     }

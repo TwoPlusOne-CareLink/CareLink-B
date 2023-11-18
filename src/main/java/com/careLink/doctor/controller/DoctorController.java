@@ -41,10 +41,10 @@ public class DoctorController {
 
         List<DoctorCounselingListDto> list = doctorService.doctorGetList(counselingPager, doctorDepartmentId);
 
-//      리스트만 보내줘도됨
 //        Map<String, Object> map = new HashMap<>();
 //        map.put("list", list);
 //        map.put("pager", counselingPager);
+
         return new ResponseEntity<List>(list, HttpStatus.OK);
     }
 
@@ -69,7 +69,7 @@ public class DoctorController {
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
-    @GetMapping("/counselingDetail/{counselingId}") //상담상세정보
+    @GetMapping("/counselingDetail/{counselingId}") //상담상세정보조회
     public ResponseEntity<CounselingDetailResultDto> getCounSelingDetail(@PathVariable int counselingId) {
         String id = common.memberId();
 

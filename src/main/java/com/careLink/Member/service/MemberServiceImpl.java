@@ -3,15 +3,14 @@ package com.careLink.member.service;
 import com.careLink.common.Common;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
+import com.careLink.entity.MemberEntity;
 import com.careLink.exception.ErrorException;
-import com.careLink.member.dto.CounselingDetailDto;
-import com.careLink.member.dto.CounselingDetailResultDto;
-import com.careLink.member.dto.CounselingResultDto;
-import com.careLink.member.dto.GetRequestCounselingDto;
+import com.careLink.member.dto.*;
 import com.careLink.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +26,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
     private final Common common;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override //상담신청 페이지(회원정보넣기)
     public GetRequestCounselingDto getCounselingMemberById(String id) {
@@ -95,7 +95,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override //상담상세정보
-    public CounselingDetailResultDto getCounselingDetail(int counselingId,String id) {  //상세정보받기
+    public CounselingDetailResultDto getCounselingDetail(int counselingId, String id) {  //상세정보받기
         int replyCount = checkReply(counselingId);
         try {
             CounselingDetailResultDto resultDto = new CounselingDetailResultDto();
@@ -181,6 +181,32 @@ public class MemberServiceImpl implements MemberService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "좋아요 여부 체크 실패");
+        }
+    }
+
+    @Override //회원 정보 가져오기
+    public MemberEntity getMemberInfo(String memberId) {
+
+        try {
+            MemberEntity memberEntity = memberMapper.selectMemberInfo(memberId)
+                    .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "해당 회원 정보 없음"));
+            return memberEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원 정보 가져오기 실패");
+        }
+    }
+
+    @Override // 회원 정보 수정
+    public int updateMember(ModifyMemberDto modifyMemberDto) {
+        try {
+            String password = modifyMemberDto.getPassword();
+            password = bCryptPasswordEncoder.encode(password);
+            modifyMemberDto.passwordEncode(password);
+            return memberMapper.modifyMember(modifyMemberDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "수정 실패");
         }
     }
 

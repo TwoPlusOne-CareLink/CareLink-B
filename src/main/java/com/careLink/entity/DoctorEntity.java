@@ -9,11 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 
-@Getter@Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorEntity {
-
     private String memberId; //아이디
     private String password; //비밀번호
     private String memberName; //이름
@@ -27,7 +27,6 @@ public class DoctorEntity {
     private Date nowdate; //가입 날짜
     private String age; //나이
     private String gender; //성별
-
     private int departmentId; //진료과목 고유번호(FK)
     private int hospitalId; //병원고유번호(FK)
     private byte[] imgFile; //이미지 파일

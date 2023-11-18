@@ -4,10 +4,12 @@ package com.careLink.member.controller;
 import com.careLink.common.Common;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
+import com.careLink.entity.MemberEntity;
 import com.careLink.exception.ErrorException;
 import com.careLink.member.dto.CounselingDetailResultDto;
 import com.careLink.member.dto.CounselingResultDto;
 import com.careLink.member.dto.GetRequestCounselingDto;
+import com.careLink.member.dto.ModifyMemberDto;
 import com.careLink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +42,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/requestCounseling", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //비대면상담신청(회원)
-    public ResponseEntity<Integer> postRequestCounseling
-            (@RequestPart(value = "file", required = false) MultipartFile attach, CounselingEntity counselingEntity) {
+    public ResponseEntity<Integer> postRequestCounseling(@RequestPart(value = "file", required = false) MultipartFile attach, CounselingEntity counselingEntity) {
 //      아이디 받아옴
         String id = common.memberId();
         counselingEntity.setMemberId(id);
@@ -71,7 +72,7 @@ public class MemberController {
         String id = common.memberId();
         log.info("id " + id);
         log.info("no " + counselingId);
-        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId,id);
+        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId, id);
 
         return new ResponseEntity<>(counselingDetailResultDto, HttpStatus.OK);
     }
@@ -81,5 +82,24 @@ public class MemberController {
         String id = common.memberId();
         int like = memberService.clickLike(id, doctorId);
         return new ResponseEntity<>(like, HttpStatus.OK);
+    }
+
+    @GetMapping("/modifyMemberInfo") // 수정페이지 들어가면 띄울 회원 정보
+    public ResponseEntity<MemberEntity> getMemberIdName() {
+        String id = common.memberId();
+        MemberEntity memberInfo = memberService.getMemberInfo(id);
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
+    }
+
+    @PutMapping("/modifyMemberInfo") // 회원 정보 수정
+    public ResponseEntity<Integer> modifyMemberInfo(@RequestBody ModifyMemberDto memberDto) {
+        String id = common.memberId();
+        if (!id.equals(memberDto.getMemberId())) {
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인한 회원의 정보가 아님");
+        } else {
+
+            int result = memberService.updateMember(memberDto); //업데이트된 행의 수(1이 아니라면 뭔가 잘못된것)
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
     }
 }

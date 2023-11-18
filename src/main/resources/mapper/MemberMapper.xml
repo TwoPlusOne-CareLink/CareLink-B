@@ -18,10 +18,20 @@
             SELECT COUNSELING_SEQ.NEXTVAL FROM DUAL
         </selectKey>
         <!-- 상담 db 전송 -->
-        INSERT INTO COUNSELING(COUNSELING_ID, COUNSELING_TITLE, MEMBER_ID, DEPARTMENT_ID,
-        COUNSELING_CONTENT,COUNSELING_IMAGE_NAME ,COUNSELING_IMAGE)
-        VALUES (#{counselingId}, #{counselingTitle}, #{memberId}, #{departmentId},
-        #{counselingContent},#{counselingImageName, jdbcType=VARCHAR} ,#{counselingImage, jdbcType=BLOB})
+        INSERT INTO COUNSELING(COUNSELING_ID,
+                               COUNSELING_TITLE,
+                               MEMBER_ID,
+                               DEPARTMENT_ID,
+                               COUNSELING_CONTENT,
+                               COUNSELING_IMAGE_NAME,
+                               COUNSELING_IMAGE)
+        VALUES (#{counselingId},
+                #{counselingTitle},
+                #{memberId},
+                #{departmentId},
+                #{counselingContent},
+                #{counselingImageName, jdbcType=VARCHAR},
+                #{counselingImage, jdbcType=BLOB})
     </insert>
 
     <!-- 게시글 개수 -->
@@ -74,7 +84,7 @@
         WHERE COUNSELING_ID = #{counselingId}
     </select>
 
-    <!-- 댓글이 없을때 나의 상담 내역 불러오기-->
+    <!-- 댓글이 없는 나의 상담 상세 정보 불러오기-->
     <select id="noReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
         SELECT C.MEMBER_ID AS PATIENT_ID,
                C.COUNSELING_ID,
@@ -89,7 +99,7 @@
         WHERE C.COUNSELING_ID = #{counselingId}
     </select>
 
-    <!-- 댓글이 있을때 내 상담 상세 내역-->
+    <!-- 댓글이 있을때 내 상담 상세 정보-->
     <select id="yesReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
         SELECT M.MEMBER_ID    AS PATIENT_ID,        -- 환자 아이디
                C.COUNSELING_ID,                     -- 상담 고유 번호
@@ -124,14 +134,14 @@
         WHERE C.COUNSELING_ID = #{counselingId}
     </select>
 
-
+<!--   좋아요 확인 -->
     <select id="checkLike" parameterType="String" resultType="int">
         SELECT COUNT(*)
         FROM DOCTOR_LIKE
         WHERE MEMBER_ID = #{memberId}
           AND DOCTOR_ID = #{doctorId}
     </select>
-
+<!-- 좋아요 추가-->
     <insert id="insertLike">
         <selectKey keyProperty="likeId" order="BEFORE" resultType="int">
             SELECT DOCTOR_LIKE_SEQ.NEXTVAL FROM DUAL
@@ -139,13 +149,29 @@
         INSERT INTO DOCTOR_LIKE (LIKE_ID,MEMBER_ID, DOCTOR_ID)
         VALUES ( #{likeId},#{memberId}, #{doctorId})
     </insert>
-
+<!-- 좋아요 삭제 -->
     <delete id="deleteLike" parameterType="String">
         DELETE
         FROM DOCTOR_LIKE
         WHERE MEMBER_ID = #{memberId}
           AND DOCTOR_ID = #{doctorId}
     </delete>
+<!--회원정보 받기-->
+    <select id="selectMemberInfo" parameterType="String" resultType="MemberEntity">
+        SELECT MEMBER_ID, MEMBER_NAME, PASSWORD, MEMBER_EMAIL, MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, MEMBER_TEL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+<!--회원정보 수정-->
+    <update id="modifyMember" parameterType="String">
+        update member
+        set password= #{password},
+            MEMBER_EMAIL=#{memberEmail},
+            MEMBER_ADDRESS=#{memberAddress},
+            MEMBER_ADDRESS_DETAIL=#{memberAddressDetail},
+            MEMBER_TEL=#{memberTel}
+        where member_id = #{memberId}
+    </update>
 
     <!--    <insert id="like" parameterType="int">-->
     <!--        <choose>-->
