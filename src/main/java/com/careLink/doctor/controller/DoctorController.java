@@ -6,7 +6,10 @@ import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
 import com.careLink.doctor.dto.ReplyDataDto;
 import com.careLink.doctor.service.DoctorService;
 import com.careLink.entity.CounselingPager;
+import com.careLink.exception.ErrorException;
+import com.careLink.member.dto.CounselingDetailResultDto;
 import com.careLink.member.dto.CounselingResultDto;
+import com.careLink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ import java.util.Map;
 @RequestMapping("/doctor")
 public class DoctorController {
 
+    private final MemberService memberService;
     private final DoctorService doctorService;
     private final Common common;
 
@@ -64,6 +68,20 @@ public class DoctorController {
 
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
+
+    @GetMapping("/counselingDetail/{counselingId}") //상담상세정보
+    public ResponseEntity<CounselingDetailResultDto> getCounSelingDetail(@PathVariable int counselingId) {
+        String id = common.memberId();
+
+        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId,id);
+        if (!id.equals(counselingDetailResultDto.getDoctorId())) {
+            log.info("받아온정보"+counselingDetailResultDto.getDoctorId());
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "자신의 정보 아님(의사)");
+        }
+
+        return new ResponseEntity<>(counselingDetailResultDto, HttpStatus.OK);
+    }
+
 
 }
 

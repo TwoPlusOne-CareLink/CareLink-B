@@ -95,12 +95,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override //상담상세정보
-    public CounselingDetailResultDto getCounselingDetail(int counselingId) {  //상세정보받기
+    public CounselingDetailResultDto getCounselingDetail(int counselingId,String id) {  //상세정보받기
         int replyCount = checkReply(counselingId);
         try {
             CounselingDetailResultDto resultDto = new CounselingDetailResultDto();
             String counselingBase64Image, doctorBase64Image;
             if (replyCount > 0) { //댓글이 있을 때
+
                 CounselingDetailDto counselingDetailDto = memberMapper.yesReplyCounselingDetail(counselingId)
                         .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "상세 정보 못 받아옴"));
                 if (counselingDetailDto.getCounselingImage() == null) { //댓글있고, 상담사진없으면
@@ -119,7 +120,7 @@ public class MemberServiceImpl implements MemberService {
                 CounselingDetailDto counselingDetailDto = memberMapper.noReplyCounselingDetail(counselingId)
                         .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "상세 정보 못 받아옴"));
                 if (counselingDetailDto.getCounselingImage() == null) { //댓글없고 상담사진없으면
-                    log.info("댓글있는데 회원이미지없");
+                    log.info("댓글없 회원이미지없");
 
                     resultDto.YesImageToResult(counselingDetailDto, null, null);
 

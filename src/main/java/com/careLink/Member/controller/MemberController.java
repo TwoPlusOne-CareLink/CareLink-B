@@ -71,11 +71,8 @@ public class MemberController {
         String id = common.memberId();
         log.info("id " + id);
         log.info("no " + counselingId);
-        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId);
-        if (!id.equals(counselingDetailResultDto.getPatientId())) {
-            log.info("받아온정보"+counselingDetailResultDto.getPatientId());
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "자신의 정보 아님");
-        }
+        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId,id);
+
         return new ResponseEntity<>(counselingDetailResultDto, HttpStatus.OK);
     }
 
