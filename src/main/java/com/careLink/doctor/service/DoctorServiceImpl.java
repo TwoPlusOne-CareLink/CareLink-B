@@ -77,7 +77,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override // 자신이 댓글단 게시물 목록
     public List<DoctorMyCounselingResultDto> doctorGetMyCounseling(CounselingPager pager, String doctorId) {
         try {
-            List<DoctorMyCounselingDto> list = doctorMapper.doctorSelectMyCounseling(pager,doctorId);
+            List<DoctorMyCounselingDto> list = doctorMapper.doctorSelectMyCounseling(pager, doctorId);
             List<DoctorMyCounselingResultDto> resultList = new ArrayList<>();
             String base64Image;
             for (DoctorMyCounselingDto doctorMyCounselingDto : list) {
@@ -99,6 +99,17 @@ public class DoctorServiceImpl implements DoctorService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "목록 불러오기 실패");
+        }
+    }
+
+    @Override // 댓글 달기
+    public int addReply(int counselingId, String memberId, String commentContent) {
+        try {
+            int replyId = doctorMapper.insertReply(counselingId, memberId, commentContent);
+            return replyId;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "댓글 등록 실패");
         }
     }
 }

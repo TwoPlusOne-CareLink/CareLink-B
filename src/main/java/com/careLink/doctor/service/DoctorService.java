@@ -13,4 +13,5 @@ public interface DoctorService {
     public int getDepartmentId(String memberId); // 로그인된 의사의 부서번호 가져오기
     public List<DoctorCounselingListDto> doctorGetList(CounselingPager pager, int departmentId); // 의사의 진료 과목에 따른 댓글이 안 달린 상담리스트 가져오기
     public List<DoctorMyCounselingResultDto> doctorGetMyCounseling(CounselingPager pager, String doctorId);
+    public int addReply(int counselingId,String memberId,String commentContent);
 }

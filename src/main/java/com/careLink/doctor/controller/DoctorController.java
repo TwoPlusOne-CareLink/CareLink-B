@@ -3,6 +3,7 @@ package com.careLink.doctor.controller;
 import com.careLink.common.Common;
 import com.careLink.doctor.dto.DoctorCounselingListDto;
 import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
+import com.careLink.doctor.dto.ReplyDataDto;
 import com.careLink.doctor.service.DoctorService;
 import com.careLink.entity.CounselingPager;
 import com.careLink.member.dto.CounselingResultDto;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +30,7 @@ public class DoctorController {
     public ResponseEntity<List> list(@RequestParam(defaultValue = "1") int pageNo) {
         String id = common.memberId();
         int doctorDepartmentId = doctorService.getDepartmentId(id);
-        log.info("=================="+id+"==================="+doctorDepartmentId);
+        log.info("==================" + id + "===================" + doctorDepartmentId);
 
         int totalRows = doctorService.getCount();
         CounselingPager counselingPager = new CounselingPager(8, 5, totalRows, pageNo);
@@ -47,7 +45,7 @@ public class DoctorController {
     }
 
     @GetMapping("/myCounselingResult") // 자신이 댓글단 상담 목록 받아 오기
-    public ResponseEntity<List> getMyResult(@RequestParam(defaultValue = "1") int pageNo){
+    public ResponseEntity<List> getMyResult(@RequestParam(defaultValue = "1") int pageNo) {
         String id = common.memberId();
 
         int totalRows = doctorService.getCount();
@@ -56,6 +54,15 @@ public class DoctorController {
         List<DoctorMyCounselingResultDto> list = doctorService.doctorGetMyCounseling(counselingPager, id);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @PostMapping("/createReply") // 댓글 달기
+    public ResponseEntity<Integer> createReply(@RequestBody ReplyDataDto replyDataDto) {
+        String id = common.memberId();
+
+        int success = doctorService.addReply(replyDataDto.getCounselingId(), id, replyDataDto.getCommentContent());
+
+        return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
 }

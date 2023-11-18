@@ -84,21 +84,13 @@
         WHERE ROWNUM >= #{pager.startRowNo}
         ]]>
     </select>
+
+<!--    댓글등록-->
+    <insert id="insertReply" >
+        <selectKey keyProperty="replyId" order="BEFORE" resultType="int">
+            SELECT COUNSELING_REPLY_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        insert into counseling_reply (reply_id,counseling_id,member_id,comment_content)
+               values (#{replyId},#{counselingId},#{memberId},#{commentContent})
+    </insert>
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

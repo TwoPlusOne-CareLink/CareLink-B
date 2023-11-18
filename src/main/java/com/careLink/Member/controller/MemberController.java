@@ -41,29 +41,29 @@ public class MemberController {
 
     @PostMapping(value = "/requestCounseling", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //비대면상담신청(회원)
     public ResponseEntity<Integer> postRequestCounseling
-            (@RequestPart(value = "file", required = false) MultipartFile attach, CounselingEntity counselingDto) {
+            (@RequestPart(value = "file", required = false) MultipartFile attach, CounselingEntity counselingEntity) {
 //      아이디 받아옴
         String id = common.memberId();
-        counselingDto.setMemberId(id);
-        int counselingId = memberService.saveCounseling(counselingDto);
+        counselingEntity.setMemberId(id);
+        int counselingId = memberService.saveCounseling(counselingEntity);
 
         return new ResponseEntity<>(counselingId, HttpStatus.OK);
     }
 
     @GetMapping("/counselingList") //나의 상담 목록
-    public ResponseEntity<Map> list(@RequestParam(defaultValue = "1") int pageNo) {
+    public ResponseEntity<List> list(@RequestParam(defaultValue = "1") int pageNo) {
 
         String id = common.memberId();
 
         int totalRows = memberService.getCount();
         CounselingPager counselingPager = new CounselingPager(8, 5, totalRows, pageNo);
 
-        List<CounselingResultDto> list = memberService.getList(counselingPager, id);
+        List<CounselingResultDto> resultList = memberService.getList(counselingPager, id);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("list", list);
-        map.put("pager", counselingPager);
-        return new ResponseEntity<Map>(map, HttpStatus.OK);
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("list", list);
+//        map.put("pager", counselingPager);
+        return new ResponseEntity<List>(resultList, HttpStatus.OK);
     }
 
     @GetMapping("/counselingDetail/{counselingId}") //상담상세정보

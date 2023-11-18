@@ -8,4 +8,6 @@
         SELECT * FROM HOSPITAL ORDER BY HOSPITAL_ID
     </select>
 
+<!--    댓글 등록-->
+
 </mapper>
