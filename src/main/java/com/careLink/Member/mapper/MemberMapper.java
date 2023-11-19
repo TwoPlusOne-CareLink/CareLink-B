@@ -41,13 +41,13 @@ public interface MemberMapper {
     //좋아요 삭제
     public int deleteLike(@Param("memberId") String memberId, @Param("doctorId") String doctorId);
 
-    // 상담답글이 등록되어있나 확인
+    // 상담에 댓글 등록여부 확인
     public int checkReply(@Param("counselingId") int counselingId);
 
     //회원정보 가져옴
     public Optional<MemberEntity> selectMemberInfo(@Param("memberId") String memberId);
 
     //회원 수정
-    public int modifyMember(ModifyMemberDto modifyMemberDto) ;
+    public void modifyMember(ModifyMemberDto modifyMemberDto) ;
 
 }

@@ -4,13 +4,22 @@
 <mapper namespace="com.careLink.doctor.mapper.DoctorMapper">
 
     <!--    댓글이 안달린 상담 개수 가져오기-->
-    <select id="count" resultType="int">
+    <select id="noReplyCount" resultType="int">
         SELECT COUNT(*)
         FROM COUNSELING C
                  LEFT JOIN COUNSELING_REPLY CR
                            ON C.COUNSELING_ID = CR.COUNSELING_ID
         WHERE CR.REPLY_ID IS NULL
+          and c.department_id =#{departmentId}
     </select>
+
+    <!--    자신이 댓글 단 상담 목록 개수 가져오기-->
+    <select id="myReplyCount" resultType="int">
+        SELECT COUNT(*)
+        from COUNSELING_REPLY
+        where member_id =#{doctorId}
+    </select>
+
 
     <!--  로그인한 의사의 진료 과목 번호 가져오기-->
     <select id="getDepartmentId" resultType="int" parameterType="String">

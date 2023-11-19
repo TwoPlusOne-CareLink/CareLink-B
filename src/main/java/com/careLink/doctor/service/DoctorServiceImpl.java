@@ -27,13 +27,24 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorMapper doctorMapper;
     private final Common common;
 
-    @Override // 댓글 안달린 상담목록 개수 가져오기
-    public int getCount() {
+    @Override //본인(의사)의 부서와 맞는 상담이 안달린 댓글 개수 가져오기
+    public int getNoReplyCount(int departmentId) {
+        try{
+        return doctorMapper.noReplyCount(departmentId);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인한 의사의  부서와 맞는 상담이 안달린 댓글 개수 가져오기 실패\"");
+        }
+    }
+
+    @Override // 본인(의사) 작성한 댓글 개수 가져오기
+    public int getMyReplyCount(String doctorId) {
         try {
-            return doctorMapper.count();
+            return doctorMapper.myReplyCount(doctorId);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "댓글 안달린 상담목록 개수 못 받아옴");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "본인(의사) 작성한 댓글 개수 가져오기 실패");
 
         }
     }
@@ -48,7 +59,7 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
-    @Override  // 로그인한 의사의 진료과목에 같은 댓글 안달린 상담 목록
+    @Override  // 로그인한 의사의 진료과목에 맞는 댓글 안달린 상담 목록
     public List<DoctorCounselingListDto> doctorGetList(CounselingPager pager, int departmentId) {
         try {
             List<CounselingEntity> list = doctorMapper.doctorSelectDCounselingByPage(pager, departmentId);
@@ -70,7 +81,7 @@ public class DoctorServiceImpl implements DoctorService {
             return resultList;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "의사의 상담 목록 불러오기 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인한 의사의 진료과목과 같은 상담 중 댓글 안달린 상담 목록 가져오기 실패");
         }
     }
 
@@ -98,15 +109,15 @@ public class DoctorServiceImpl implements DoctorService {
             return resultList;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "목록 불러오기 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "내(의사)가 댓글 단 목록 불러오기 실패");
         }
     }
 
     @Override // 댓글 달기
     public int addReply(int counselingId, String memberId, String commentContent) {
         try {
-            int replyId = doctorMapper.insertReply(counselingId, memberId, commentContent);
-            return replyId;
+            doctorMapper.insertReply(counselingId, memberId, commentContent);
+            return counselingId;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "댓글 등록 실패");

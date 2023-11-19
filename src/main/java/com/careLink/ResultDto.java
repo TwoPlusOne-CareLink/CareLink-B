@@ -1,6 +1,5 @@
 package com.careLink;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultData {
-    private int ErrorCode;
+public class ResultDto {
     private boolean success;
-    private Object data;
+    private String message;
 }

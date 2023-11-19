@@ -1,5 +1,6 @@
 package com.careLink.doctor.controller;
 
+import com.careLink.ResultDto;
 import com.careLink.common.Common;
 import com.careLink.doctor.dto.DoctorCounselingListDto;
 import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
@@ -36,7 +37,7 @@ public class DoctorController {
         int doctorDepartmentId = doctorService.getDepartmentId(id);
         log.info("==================" + id + "===================" + doctorDepartmentId);
 
-        int totalRows = doctorService.getCount();
+        int totalRows = doctorService.getNoReplyCount(doctorDepartmentId);
         CounselingPager counselingPager = new CounselingPager(8, 5, totalRows, pageNo);
 
         List<DoctorCounselingListDto> list = doctorService.doctorGetList(counselingPager, doctorDepartmentId);
@@ -52,7 +53,7 @@ public class DoctorController {
     public ResponseEntity<List> getMyResult(@RequestParam(defaultValue = "1") int pageNo) {
         String id = common.memberId();
 
-        int totalRows = doctorService.getCount();
+        int totalRows = doctorService.getMyReplyCount(id);
         CounselingPager counselingPager = new CounselingPager(8, 8, totalRows, pageNo);
 
         List<DoctorMyCounselingResultDto> list = doctorService.doctorGetMyCounseling(counselingPager, id);
@@ -61,23 +62,19 @@ public class DoctorController {
     }
 
     @PostMapping("/createReply") // 댓글 달기
-    public ResponseEntity<Integer> createReply(@RequestBody ReplyDataDto replyDataDto) {
+    public ResponseEntity<ResultDto> createReply(@RequestBody ReplyDataDto replyDataDto) {
         String id = common.memberId();
 
-        int success = doctorService.addReply(replyDataDto.getCounselingId(), id, replyDataDto.getCommentContent());
+        int counselingId = doctorService.addReply(replyDataDto.getCounselingId(), id, replyDataDto.getCommentContent());
 
-        return new ResponseEntity<>(success, HttpStatus.OK);
+        return new ResponseEntity<ResultDto>(new ResultDto(true, counselingId + "번 상담에 댓글 등록 성공"), HttpStatus.OK);
     }
 
     @GetMapping("/counselingDetail/{counselingId}") //상담상세정보조회
-    public ResponseEntity<CounselingDetailResultDto> getCounSelingDetail(@PathVariable int counselingId) {
+    public ResponseEntity<CounselingDetailResultDto> getCounselingDetail(@PathVariable int counselingId) {
         String id = common.memberId();
 
-        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId,id);
-        if (!id.equals(counselingDetailResultDto.getDoctorId())) {
-            log.info("받아온정보"+counselingDetailResultDto.getDoctorId());
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "자신의 정보 아님(의사)");
-        }
+        CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId, id);
 
         return new ResponseEntity<>(counselingDetailResultDto, HttpStatus.OK);
     }

@@ -16,5 +16,5 @@ public interface MemberService {
     public CounselingDetailResultDto getCounselingDetail(int no,String id); // 상세 정보
     public int clickLike(String memberId,String doctorId); // 좋아요
     public MemberEntity getMemberInfo(String memberId); // 회원 정보 가져오기
-    public int updateMember(ModifyMemberDto modifyMemberDto); //회원 정보 수정
+    public String updateMember(ModifyMemberDto modifyMemberDto); //회원 정보 수정
 }

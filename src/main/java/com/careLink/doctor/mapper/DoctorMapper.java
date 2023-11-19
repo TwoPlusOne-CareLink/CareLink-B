@@ -11,7 +11,8 @@ import java.util.List;
 //의사
 @Mapper
 public interface DoctorMapper {
-    public int count();
+    public int noReplyCount(@Param("departmentId") int departmentId); ////본인(의사)의 부서와 맞는 상담이 안달린 댓글 개수 가져오기
+    public int myReplyCount(@Param("doctorId") String doctorId); //본인(의사) 작성한 댓글 개수 가져오기
 
     public int getDepartmentId(@Param("memberId") String memberId); // 진료과목 번호 받아오기
 
