@@ -73,8 +73,12 @@ public class DoctorController {
     @GetMapping("/counselingDetail/{counselingId}") //상담상세정보조회
     public ResponseEntity<CounselingDetailResultDto> getCounselingDetail(@PathVariable int counselingId) {
         String id = common.memberId();
-
+        
         CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId, id);
+        
+        if(!id.equals(counselingDetailResultDto.getPatientId())||counselingDetailResultDto!=null){
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "내가 작성한 상담이 아닙니다");
+        }
 
         return new ResponseEntity<>(counselingDetailResultDto, HttpStatus.OK);
     }

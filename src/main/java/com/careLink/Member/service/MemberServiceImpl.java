@@ -217,5 +217,4 @@ public class MemberServiceImpl implements MemberService {
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원 정보 수정 실패");
         }
     }
-
 }
