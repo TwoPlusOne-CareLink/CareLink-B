@@ -2,18 +2,23 @@ package com.careLink.doctor.service;
 
 import com.careLink.common.Common;
 import com.careLink.doctor.dto.DoctorCounselingListDto;
+import com.careLink.doctor.dto.DoctorDto;
 import com.careLink.doctor.dto.DoctorMyCounselingDto;
 import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
 import com.careLink.doctor.mapper.DoctorMapper;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
+import com.careLink.entity.DoctorInfoEntity;
+import com.careLink.entity.MemberEntity;
 import com.careLink.exception.ErrorException;
 import com.careLink.member.dto.CounselingResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +31,58 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorMapper doctorMapper;
     private final Common common;
+
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public void join(MemberEntity member) { //member테이블에 의사회원정보 저장(성민)
+        try {
+            doctorMapper.save(member);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "의사 1차 회원가입 실패");
+        }
+
+    }
+    @Override
+    public String signup(DoctorDto doctor) { //성민
+
+        String role = "ROLE_DOCTOR"; //의사 권한
+
+        String password = doctor.getPassword(); //비밀번호
+        password = bCryptPasswordEncoder.encode(password); //비밀번호 암호화
+
+        //member테이블
+        MemberEntity member = new MemberEntity(doctor.getDoctorId(), password, doctor.getDoctorName(),
+                doctor.getDoctorEmail(), doctor.getDoctorTel(), doctor.getDoctorAddress(), doctor.getDoctorAddressDetail(),
+                role, 1, doctor.getAge(), doctor.getGender() );
+
+        join(member); //의사회원정보 member 테이블에 저장
+        log.info("멤버테이블에는 전송 성공");
+
+        String doctorId = member.getMemberId(); //의사 고유번호
+        //의사 정보 테이블
+        DoctorInfoEntity doctorinfo;
+
+        try {
+            if(doctor.getFile() != null && !doctor.getFile().isEmpty()) { //파일이 존재할 떄
+                MultipartFile file = doctor.getFile();
+                String fileName = file.getOriginalFilename();
+                doctorinfo = new DoctorInfoEntity(doctor.getDoctorId(), doctor.getDepartmentId(), doctor.getHospitalId(), file.getBytes(), fileName);
+            }
+            else {
+                doctorinfo = new DoctorInfoEntity(doctor.getDoctorId(), doctor.getDepartmentId(), doctor.getHospitalId(), null, null);
+            }
+
+            doctorMapper.upload(doctorinfo); //의사 정보를 테이블에 저장
+            return doctorId; //회원번호 리턴
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원가입 2차 실패");
+        }
+    }
+
 
     @Override //본인(의사)의 부서와 맞는 상담이 안달린 댓글 개수 가져오기
     public int getNoReplyCount(int departmentId) {

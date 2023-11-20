@@ -3,6 +3,8 @@ package com.careLink.doctor.mapper;
 import com.careLink.doctor.dto.DoctorMyCounselingDto;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.CounselingPager;
+import com.careLink.entity.DoctorInfoEntity;
+import com.careLink.entity.MemberEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,6 +13,8 @@ import java.util.List;
 //의사
 @Mapper
 public interface DoctorMapper {
+    public void save(MemberEntity member); //회원 테이블에 의사 정보 저장
+    public void upload(DoctorInfoEntity doctorInfo); //의사정보 테이블에 저장
     public int noReplyCount(@Param("departmentId") int departmentId); ////본인(의사)의 부서와 맞는 상담이 안달린 댓글 개수 가져오기
     public int myReplyCount(@Param("doctorId") String doctorId); //본인(의사) 작성한 댓글 개수 가져오기
 
@@ -27,6 +31,4 @@ public interface DoctorMapper {
     public int insertReply(@Param("counselingId") int counselingId,
                            @Param("memberId") String memberId,
                            @Param("commentContent") String commentContent);
-
-
 }

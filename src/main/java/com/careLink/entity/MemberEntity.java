@@ -9,8 +9,8 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberEntity {
-    
+public class MemberEntity { //회원 테이블
+
     private int memberNo; //회원 고유번호
     private String memberId; //아이디
     private String password; //비밀번호
@@ -37,7 +37,7 @@ public class MemberEntity {
     }
 
     //의사 회원가입시 회원정보 담기
-    public MemberEntity(String memberId, String password, String memberName, String memberEmail, String memberTel, String memberAddress, String memberAddressDetail, String role, int withdrawal, int agree, String age, String gender) {
+    public MemberEntity(String memberId, String password, String memberName, String memberEmail, String memberTel, String memberAddress, String memberAddressDetail, String role, int withdrawal, String age, String gender) {
         this.memberId = memberId;
         this.password = password;
         this.memberName = memberName;

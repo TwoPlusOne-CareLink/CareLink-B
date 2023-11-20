@@ -3,23 +3,22 @@ package com.careLink.doctor.controller;
 import com.careLink.ResultDto;
 import com.careLink.common.Common;
 import com.careLink.doctor.dto.DoctorCounselingListDto;
+import com.careLink.doctor.dto.DoctorDto;
 import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
 import com.careLink.doctor.dto.ReplyDataDto;
 import com.careLink.doctor.service.DoctorService;
 import com.careLink.entity.CounselingPager;
-import com.careLink.exception.ErrorException;
 import com.careLink.member.dto.CounselingDetailResultDto;
-import com.careLink.member.dto.CounselingResultDto;
 import com.careLink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -30,6 +29,16 @@ public class DoctorController {
     private final MemberService memberService;
     private final DoctorService doctorService;
     private final Common common;
+
+    @PostMapping(value = "doctorAdd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)//의사회원가입(성민)
+    public ResponseEntity<ResultDto> doctorAdd(@RequestPart MultipartFile file, DoctorDto doctor) {
+
+        log.info("의사등록 의사이름 : " + doctor.getDoctorName());
+        log.info("딴거는 : " + doctor.getDoctorId());
+        String memberId = doctorService.signup(doctor);
+        return new ResponseEntity<>(new ResultDto(true, memberId + " 의사등록 성공"), HttpStatus.OK);
+
+    }
 
     @GetMapping("/counselingList") //의사의 부서에 따른 답글이 안달린 상담 목록
     public ResponseEntity<List> list(@RequestParam(defaultValue = "1") int pageNo) {

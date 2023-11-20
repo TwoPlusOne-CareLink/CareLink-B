@@ -5,8 +5,6 @@ import com.careLink.auth.result.JoinResult;
 import com.careLink.auth.result.LoginResult;
 import com.careLink.auth.service.AuthService;
 import com.careLink.entity.MemberEntity;
-import com.careLink.security.AppUserDetails;
-import com.careLink.security.JwrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
