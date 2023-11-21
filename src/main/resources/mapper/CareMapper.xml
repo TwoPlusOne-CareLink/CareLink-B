@@ -4,10 +4,182 @@
 <mapper namespace="com.careLink.member.mapper.CareMapper">
 
     <!-- 전체 병원 정보 -->
-    <select id="hospitalSelect" resultType="HospitalEntity">
-        SELECT * FROM HOSPITAL ORDER BY HOSPITAL_ID
+    <select id="hospitalSelect" resultType="HospitalEntity" parameterType="String">
+        <choose>
+            <when test="hospitalName.equals('all')">
+                SELECT * FROM HOSPITAL ORDER BY HOSPITAL_ID
+            </when>
+
+            <otherwise>
+                SELECT *
+                FROM HOSPITAL
+                WHERE HOSPITAL_NAME LIKE '%' || #{hospitalName} || '%'
+                ORDER BY HOSPITAL_ID
+            </otherwise>
+
+        </choose>
     </select>
 
-<!--    댓글 등록-->
+    <!--병원 상세정보(+진료과목) -->
+    <select id="hospitalInfo" parameterType="int" resultType="HospitalDetailDto">
+        SELECT H.HOSPITAL_ID,
+               H.HOSPITAL_NAME,
+               H.ADDRESS,
+               H.WEEKDAY_OPENINGTIME,
+               H.WEEKEND_OPENINGTIME,
+               H.TEL,
+               H.HOLIDAY_CHECK,
+               H.LUNCH_HOUR,
+               H.LAT,
+               H.LNG,
+               LISTAGG(D.DEPARTMENT_NAME, ',') WITHIN GROUP (ORDER BY D.DEPARTMENT_NAME) AS DEPARTMENT_NAMES
+        FROM HOSPITAL H, HOSPITAL_DEPARTMENT HD, DEPARTMENT D
+        WHERE H.HOSPITAL_ID = HD.HOSPITAL_ID
+          AND
+              HD.DEPARTMENT_ID = D.DEPARTMENT_ID
+          AND
+              H.HOSPITAL_ID = #{hospitalId}
+        GROUP BY
+            H.HOSPITAL_ID,
+            H.HOSPITAL_NAME,
+            H.ADDRESS,
+            H.WEEKDAY_OPENINGTIME,
+            H.WEEKEND_OPENINGTIME,
+            H.TEL,
+            H.HOLIDAY_CHECK,
+            H.LUNCH_HOUR,
+            H.LAT,
+            H.LNG
+    </select>
+
+    <!-- 병원 상세 정보(의사 프로필) -->
+    <select id="doctorProfile" parameterType="int" resultType="DoctorProfileDto">
+        SELECT
+            M.MEMBER_ID,
+            M.MEMBER_NAME,
+            DI.DEPARTMENT_ID,
+            DI.IMG_FILE,
+            DI.FILE_NAME,
+            (
+                SELECT COUNT(*)
+                FROM DOCTOR_LIKE DL
+                WHERE DL.DOCTOR_ID = M.MEMBER_ID
+            ) AS LIKE_COUNT
+        FROM MEMBER M, DOCTOR_INFO DI
+        WHERE M.MEMBER_ID = DI.MEMBER_ID AND DI.HOSPITAL_ID = #{hospitalId}
+        ORDER BY DI.DEPARTMENT_ID, M.MEMBER_ID
+    </select>
+
+    <!--병원 예약 중복확인 -->
+    <select id="check" parameterType="ReservationEntity" resultType="int">
+        SELECT COUNT(RESERVATION_ID) COUNT
+        FROM RESERVATION
+        WHERE HOSPITAL_ID = #{hospitalId}
+                AND RESERVATION_DATE = #{reservationDate}
+                AND DEPARTMENT_ID = #{departmentId}
+                AND RESERVATION_TIME = #{reservationTime}
+    </select>
+
+    <!-- 병원 예약 -->
+    <insert id="reservation">
+        <!-- 회원가입 후 생성되는 회원 고유번호 반환 -->
+        <selectKey keyProperty="reservationId" order="BEFORE" resultType="int">
+            SELECT RESERVATION_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        <!-- 병원예약 db 전송 -->
+        INSERT INTO RESERVATION(reservation_id, member_id, hospital_id, department_id, reservation_date,
+                                reservation_time, reservation_member, reservation_tel, reservation_content)
+               VALUES (
+                       #{reservationId},
+                       #{memberId},
+                       #{hospitalId},
+                       #{departmentId},
+                       #{reservationDate},
+                       #{reservationTime},
+                       #{reservationMember},
+                       #{reservationTel},
+                       #{reservationContent}
+                       )
+    </insert>
+
+
+    <!-- 병원 예약 페이지 -->
+    <!-- 1-1 병원 예약 페이지 기본 정보 -->
+    <select id="rDefaultInfo" parameterType="ReservationDto" resultType="ReservationDefaultDto">
+        SELECT M.MEMBER_NAME,
+               M.MEMBER_TEL,
+               LISTAGG(D.DEPARTMENT_ID, ',') WITHIN GROUP (ORDER BY D.DEPARTMENT_ID) AS DEPARTMENT_IDS,
+               LISTAGG(D.DEPARTMENT_NAME, ',') WITHIN GROUP (ORDER BY D.DEPARTMENT_ID) AS DEPARTMENT_NAMES
+        FROM MEMBER M, HOSPITAL_DEPARTMENT HD, DEPARTMENT D
+        WHERE M.MEMBER_ID=#{memberId} AND HD.HOSPITAL_ID = #{hospitalId} AND HD.DEPARTMENT_ID = D.DEPARTMENT_ID
+        GROUP BY M.MEMBER_NAME, M.MEMBER_TEL
+    </select>
+
+    <!-- 1-2 병원 일정 정보 -->
+    <select id="dateInfo" parameterType="int" resultType="ReservationPageInfoDto">
+        SELECT R.RESERVATION_ID, R.RESERVATION_DATE, R.RESERVATION_TIME, D.DEPARTMENT_NAME
+        FROM RESERVATION R, DEPARTMENT D
+        WHERE R.HOSPITAL_ID = #{hospitalId} AND R.DEPARTMENT_ID = D.DEPARTMENT_ID
+    </select>
+
+    <!-- 일일 체크리스트 작성 -->
+
+    <!-- 일일 체크리스트 작성 & 목록 페이지 -->
+    <select id="checkListPage" parameterType="String" resultType="CheckListInfoDto">
+        SELECT HC.CHECK_ID, M.MEMBER_ID, M.MEMBER_NAME, HC.HEALTH_MEMO, HC.NOWDATE
+        FROM HEALTH_CHECK HC, MEMBER M
+        WHERE M.MEMBER_ID = HC.MEMBER_ID AND M.MEMBER_ID = #{memberId}
+        ORDER BY CHECK_ID
+    </select>
+
+    <!-- 체크리스트 등록 -->
+    <insert id="checkListAdd" parameterType="healthCheckEntity">
+        <selectKey keyProperty="checkId" order="BEFORE" resultType="int">
+            SELECT health_check_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+            <!-- 체크리스드 등록 -->
+            INSERT INTO HEALTH_CHECK(CHECK_ID, MEMBER_ID, MEMBER_NAME, GENDER, AGE, HEIGHT, WEIGHT, SYSTOLIC_BLOOD_PRESSURE,
+                                      RELAXATION_BLOOD_PRESSURE, BLOOD_SUGAR, HEART_RATE, HEALTH_MEMO)
+                   VALUES(
+                          #{checkId},
+                          #{memberId},
+                          #{memberName},
+                          #{gender},
+                          #{age},
+                          #{height},
+                          #{weight},
+                          #{systolicBloodPressure},
+                          #{relaxationBloodPressure},
+                          #{bloodSugar},
+                          #{heartRate},
+                          #{healthMemo}
+                          )
+    </insert>
+
+    <!-- 오늘 이미 잓성했는지 검사 -->
+    <select id="duplicateCheck" parameterType="DuplicateCheckDto" resultType="int">
+        SELECT COUNT(CHECK_ID)
+        FROM HEALTH_CHECK
+        WHERE MEMBER_ID = #{memberId} AND TO_DATE(NOWDATE, 'YY/MM/DD') = #{nowdate}
+    </select>
+
+    <!-- 체크리스트 작성 내역 -->
+    <select id="checkResult" parameterType="int" resultType="CheckListResultDto">
+        SELECT CHECK_ID,
+               MEMBER_ID,
+               MEMBER_NAME,
+               GENDER,
+               AGE,
+               HEIGHT,
+               WEIGHT,
+               HEART_RATE,
+               BLOOD_SUGAR,
+               SYSTOLIC_BLOOD_PRESSURE,
+               RELAXATION_BLOOD_PRESSURE,
+               HEALTH_MEMO
+        FROM HEALTH_CHECK
+        WHERE CHECK_ID = #{checkId}
+    </select>
 
 </mapper>
+

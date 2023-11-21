@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorInfoEntity {
+public class DoctorInfoEntity { //의사정보 테이블
 
     private int infoId; //의사정보 고유번호
     private String memberId; //의사회원 아이디(FK)

@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ErrorException.class)
-    public ResponseEntity<String> handleOnstagramException(ErrorException ex) {
+    public ResponseEntity<ErrorResponse> handleOnstagramException(ErrorException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
         // 에러 응답을 생성하여 클라이언트로 보냅니다.
-        return new ResponseEntity<>(ex.getErrorMessage(), HttpStatus.valueOf(ex.getErrorCode()));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode()));
     }
 
 }

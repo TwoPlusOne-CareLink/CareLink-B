@@ -1,10 +1,8 @@
 package com.careLink.doctor.dto;
 
-import com.careLink.entity.CounselingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @AllArgsConstructor

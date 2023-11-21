@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,42 +37,27 @@ public class MemberServiceImpl implements MemberService {
     @Override //상담신청 저장
     public int saveCounseling(CounselingEntity counselingEntity) {
         try {
-            if (counselingEntity.getAttach() != null && !counselingEntity.getAttach().isEmpty()) {
-                MultipartFile mf = counselingEntity.getAttach();
-                counselingEntity.setCounselingImageName(mf.getOriginalFilename());
-
-                counselingEntity.setCounselingImage(mf.getBytes());
-
-
-            } else {
-                counselingEntity.setCounselingImage(null);
-                counselingEntity.setCounselingImageName(null);
-
-                log.info("이미지없음");
-            }
             memberMapper.saveCounseling(counselingEntity);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "상담 신청 실패");
         }
-        log.info("상담정보 저장 완료");
         return counselingEntity.getCounselingId();
     }
 
-    @Override //게시물 전체갯수(페이징)
-    public int getCount() {
-        try {
-
-            return memberMapper.count();
-        } catch (Exception e) {
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "게시물 개수 불러오기 실패");
-        }
-    }
+//    @Override //게시물 전체갯수(페이징)
+//    public int getCount() {
+//        try {
+//            return memberMapper.count();
+//        } catch (Exception e) {
+//            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "게시물 개수 불러오기 실패");
+//        }
+//    }
 
     @Override//내 상담 내역
-    public List<CounselingResultDto> getList(CounselingPager pager, String id) {
+    public List<CounselingResultDto> getList(/*CounselingPager pager, */String id) {
         try {
-            List<CounselingEntity> list = memberMapper.selectCounselingByPage(pager, id);
+            List<CounselingEntity> list = memberMapper.selectCounseling(id);
             List<CounselingResultDto> resultList = new ArrayList<>();
             String base64Image;
             for (CounselingEntity counselingEntity : list) {
@@ -106,9 +90,7 @@ public class MemberServiceImpl implements MemberService {
                 CounselingDetailDto counselingDetailDto = memberMapper.yesReplyCounselingDetail(counselingId)
                         .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "댓글이 있을 때의 데이터 불러오기 실패"));
                 if (counselingDetailDto.getCounselingImage() == null) { //댓글있고, 상담사진없으면
-                    log.info("댓글있는데 회원이미지없");
                     doctorBase64Image = common.convertImageToBase64(counselingDetailDto.getDoctorImage());
-
                     resultDto.YesImageToResult(counselingDetailDto, null, doctorBase64Image);
 
                 } else { //댓글있고 사진있을때
@@ -121,10 +103,7 @@ public class MemberServiceImpl implements MemberService {
                 CounselingDetailDto counselingDetailDto = memberMapper.noReplyCounselingDetail(counselingId)
                         .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "댓글이 없을 때의 데이터 불러오기 실패"));
                 if (counselingDetailDto.getCounselingImage() == null) { //댓글없고 상담사진없으면
-                    log.info("댓글없 회원이미지없");
-
                     resultDto.YesImageToResult(counselingDetailDto, null, null);
-
                 } else { //댓글없고 사진있을때
                     counselingBase64Image = common.convertImageToBase64(counselingDetailDto.getCounselingImage());
                     resultDto.YesImageToResult(counselingDetailDto, counselingBase64Image, null);
@@ -210,8 +189,7 @@ public class MemberServiceImpl implements MemberService {
             password = bCryptPasswordEncoder.encode(password);
             modifyMemberDto.passwordEncode(password);
             memberMapper.modifyMember(modifyMemberDto);
-            String id = modifyMemberDto.getMemberId();
-            return id;
+            return modifyMemberDto.getMemberId();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원 정보 수정 실패");

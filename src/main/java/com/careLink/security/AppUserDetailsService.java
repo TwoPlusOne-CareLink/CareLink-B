@@ -2,9 +2,10 @@ package com.careLink.security;
 
 import com.careLink.auth.mapper.AuthMapper;
 import com.careLink.entity.MemberEntity;
+import com.careLink.exception.ErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +31,8 @@ public class AppUserDetailsService implements UserDetailsService {
         //아이디가 존재하는지 여부 확인후 입력한 비밀번호와 아이디로 불러온 회원정보의 비밀번호 값을 대조
         if(member == null) {
             log.info("아이디가 존재하지 않습니다.");
-            throw new UsernameNotFoundException(username); //아이디가 없을때 예외처리 403
-//            throw new ErrorException(HttpStatus.UNAUTHORIZED.value(), "아이디가 없다."); //401
+//            throw new UsernameNotFoundException(username); //아이디가 없을때 예외처리 403
+            throw new ErrorException(HttpStatus.NOT_FOUND.value(), "아이디가 없다"); //로그인 아이디가 없다.
         }
 
         log.info("아이디 존재");

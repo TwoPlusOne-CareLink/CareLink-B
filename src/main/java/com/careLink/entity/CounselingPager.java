@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CounselingPager {
+public class CounselingPager { //상담목록 페이징
 
     private int totalRows;      //전체 행수
     private int totalPageNo;   //전체 페이지 수

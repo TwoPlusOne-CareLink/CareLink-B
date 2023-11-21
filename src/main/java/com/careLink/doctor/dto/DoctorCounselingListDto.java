@@ -4,7 +4,6 @@ import com.careLink.entity.CounselingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 

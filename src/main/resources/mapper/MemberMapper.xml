@@ -41,27 +41,9 @@
     </select>
 
     <!-- 나의 상담 내역 불러오기-->
-    <select id="selectCounselingByPage" resultType="CounselingEntity">
-      <![CDATA[
-        SELECT RNUM,
-               COUNSELING_ID,
-               COUNSELING_TITLE,
-               MEMBER_ID,
-               DEPARTMENT_ID,
-               COUNSELING_CONTENT,
-               COUNSELING_DATE,
-               COUNSELING_IMAGE,
-               COUNSELING_IMAGE_NAME
-        FROM (SELECT ROWNUM AS RNUM,
-                     COUNSELING_ID,
-                     COUNSELING_TITLE,
-                     MEMBER_ID,
-                     DEPARTMENT_ID,
-                     COUNSELING_CONTENT,
-                     COUNSELING_DATE,
-                     COUNSELING_IMAGE,
-                     COUNSELING_IMAGE_NAME
-              FROM (SELECT COUNSELING_ID,
+    <select id="selectCounseling" resultType="CounselingEntity">
+
+        SELECT COUNSELING_ID,
                            COUNSELING_TITLE,
                            MEMBER_ID,
                            DEPARTMENT_ID,
@@ -71,11 +53,46 @@
                            COUNSELING_IMAGE_NAME
                     FROM COUNSELING
                     WHERE MEMBER_ID = #{memberId}
-                    ORDER BY COUNSELING_ID DESC)
-              WHERE ROWNUM <= #{pager.endRowNo})
-        WHERE RNUM >= #{pager.startRowNo}
-        ]]>
+                    ORDER BY COUNSELING_ID DESC
    </select>
+
+
+<!-- 페이징-->
+    <!--    <select id="selectCounselingByPage" resultType="CounselingEntity">-->
+<!--      <![CDATA[-->
+<!--        SELECT RNUM,-->
+<!--               COUNSELING_ID,-->
+<!--               COUNSELING_TITLE,-->
+<!--               MEMBER_ID,-->
+<!--               DEPARTMENT_ID,-->
+<!--               COUNSELING_CONTENT,-->
+<!--               COUNSELING_DATE,-->
+<!--               COUNSELING_IMAGE,-->
+<!--               COUNSELING_IMAGE_NAME-->
+<!--        FROM (SELECT ROWNUM AS RNUM,-->
+<!--                     COUNSELING_ID,-->
+<!--                     COUNSELING_TITLE,-->
+<!--                     MEMBER_ID,-->
+<!--                     DEPARTMENT_ID,-->
+<!--                     COUNSELING_CONTENT,-->
+<!--                     COUNSELING_DATE,-->
+<!--                     COUNSELING_IMAGE,-->
+<!--                     COUNSELING_IMAGE_NAME-->
+<!--              FROM (SELECT COUNSELING_ID,-->
+<!--                           COUNSELING_TITLE,-->
+<!--                           MEMBER_ID,-->
+<!--                           DEPARTMENT_ID,-->
+<!--                           COUNSELING_CONTENT,-->
+<!--                           COUNSELING_DATE,-->
+<!--                           COUNSELING_IMAGE,-->
+<!--                           COUNSELING_IMAGE_NAME-->
+<!--                    FROM COUNSELING-->
+<!--                    WHERE MEMBER_ID = #{memberId}-->
+<!--                    ORDER BY COUNSELING_ID DESC)-->
+<!--              WHERE ROWNUM <= #{pager.endRowNo})-->
+<!--        WHERE RNUM >= #{pager.startRowNo}-->
+<!--        ]]>-->
+<!--   </select>-->
 
     <!-- 상담에 댓글이 달렸나 확인-->
     <select id="checkReply">
@@ -158,7 +175,7 @@
     </delete>
 <!--회원정보 받기-->
     <select id="selectMemberInfo" parameterType="String" resultType="MemberEntity">
-        SELECT MEMBER_ID, MEMBER_NAME, PASSWORD, MEMBER_EMAIL, MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, MEMBER_TEL
+        SELECT MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, MEMBER_TEL
         FROM MEMBER
         WHERE MEMBER_ID = #{memberId}
     </select>
@@ -172,17 +189,5 @@
             MEMBER_TEL=#{memberTel}
         where member_id = #{memberId}
     </update>
-
-    <!--    <insert id="like" parameterType="int">-->
-    <!--        <choose>-->
-    <!--            <when test="">-->
-    <!--                -->
-    <!--            </when>-->
-    <!--            <otherwise>-->
-    <!--                -->
-    <!--            </otherwise>-->
-    <!--        </choose>-->
-    <!--    </insert>-->
-
 
 </mapper>

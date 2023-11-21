@@ -1,14 +1,25 @@
 package com.careLink.member.service;
 
-import com.careLink.member.dto.HospitalInfoDto;
+import com.careLink.entity.HealthCheckEntity;
+import com.careLink.entity.ReservationEntity;
+import com.careLink.member.dto.*;
 
 import java.util.List;
 
 //붱원찾기(예약), 일일체크
 public interface CareService {
 
-    public List<HospitalInfoDto> hospitalInfo(); //병원 전체 목록 & 정보
-    //병원 검색
-    //병원 상세 목록
-    //병원 예약
+    //병원 찾기
+    public List<HospitalInfoDto> hospitalInfo(String hospitalName); //병원 전체 목록 & 정보 && 검색
+    public HospitalDetailResultDto hDetail(int hospitalId);//병원 상세 목록
+
+    //병원 찾기 - 예약
+    public ReservationPageDto reservationPageInfo(ReservationDto dto);//병원 예약 페이지
+    public int Reservation(ReservationEntity reservationEntity);//병원 예약
+
+    //건강체크
+    public MemberInfoDto HealthCheckListPage(String memberId); //체크리스트 작성 & 목록 페이지
+    public int HealthCheckAdd(HealthCheckEntity healthCheckEntity); //체크리스트 작성
+    public CheckListResultDto ckResult(int checkId); //
+
 }

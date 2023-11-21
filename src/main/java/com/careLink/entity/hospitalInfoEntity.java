@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class LikeEntity {
-    private int likeId;
+@NoArgsConstructor
+public class hospitalInfoEntity {
+    private int hinfoNo;
     private String memberId;
-    private String doctorId;
+    private int hospitalId;
 }

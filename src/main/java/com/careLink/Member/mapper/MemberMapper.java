@@ -24,7 +24,7 @@ public interface MemberMapper {
     public int count();
 
     //상담 목록 받아오기
-    public List<CounselingEntity> selectCounselingByPage(@Param("pager") CounselingPager pager, @Param("memberId") String memberId);
+    public List<CounselingEntity> selectCounseling(@Param("memberId") String memberId);
 
     //댓글이 없는 상담 상세 정보 받아오기
     public Optional<CounselingDetailDto> noReplyCounselingDetail(@Param("counselingId") int counselingId);

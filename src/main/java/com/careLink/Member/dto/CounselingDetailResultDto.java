@@ -40,4 +40,3 @@ public class CounselingDetailResultDto {
         likedByPatient=counselingDetailDto.getLikedByPatient();
     }
 }
-

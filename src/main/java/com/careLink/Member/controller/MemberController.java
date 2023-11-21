@@ -20,9 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -43,35 +41,39 @@ public class MemberController {
     }
 
     @PostMapping(value = "/requestCounseling", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //비대면상담신청(회원)
-    public ResponseEntity<ResultDto> postRequestCounseling(@RequestPart(value = "file", required = false) MultipartFile attach, CounselingEntity counselingEntity) {
+    public ResponseEntity<ResultDto> postRequestCounseling(@RequestPart(required = false) MultipartFile counselingAttach, CounselingEntity counselingEntity) {
         String id = common.memberId();//아이디 받아오기
         counselingEntity.setMemberId(id);
+
+        if (counselingAttach != null && !counselingAttach.isEmpty()) {
+            counselingEntity.setCounselingImageName(counselingAttach.getOriginalFilename());
+            try {
+                counselingEntity.setCounselingImage(counselingAttach.getBytes());
+            } catch (Exception e) {
+                throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "파일 저장 실패");
+            }
+        }
+
         int counselingId = memberService.saveCounseling(counselingEntity);
 
-        return new ResponseEntity<ResultDto>(new ResultDto(true,counselingId+"번 상담이 등록되었습니다"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResultDto(true,counselingId+"번 상담이 등록되었습니다"), HttpStatus.OK);
     }
 
     @GetMapping("/counselingList") //나의 상담 목록
-    public ResponseEntity<List> list(@RequestParam(defaultValue = "1") int pageNo) {
+    public ResponseEntity<List<CounselingResultDto>> list(/*@RequestParam(defaultValue = "1") int pageNo*/) {
 
         String id = common.memberId();
 
-        int totalRows = memberService.getCount();
-        CounselingPager counselingPager = new CounselingPager(8, 5, totalRows, pageNo);
+//        int totalRows = memberService.getCount();
+//        CounselingPager counselingPager = new CounselingPager(8, 5, totalRows, pageNo);
+        List<CounselingResultDto> resultList = memberService.getList(/*counselingPager, */id);
 
-        List<CounselingResultDto> resultList = memberService.getList(counselingPager, id);
-
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("list", list);
-//        map.put("pager", counselingPager);
-        return new ResponseEntity<List>(resultList, HttpStatus.OK);
+        return new ResponseEntity<>(resultList, HttpStatus.OK);
     }
 
     @GetMapping("/counselingDetail/{counselingId}") //상담상세정보
     public ResponseEntity<CounselingDetailResultDto> getCounselingDetail(@PathVariable int counselingId) {
         String id = common.memberId();
-        log.info("id " + id);
-        log.info("no " + counselingId);
         CounselingDetailResultDto counselingDetailResultDto = memberService.getCounselingDetail(counselingId, id);
         if(!id.equals(counselingDetailResultDto.getPatientId())){
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인한 회원의 상담이 아님");

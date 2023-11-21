@@ -22,16 +22,14 @@ public class CounselingResultDto {
     private String counselingImageName;
 
     public void toResult(CounselingEntity counselingEntity, String base64Img) {
-          counselingId = counselingEntity.getCounselingId();
-          counselingTitle = counselingEntity.getCounselingTitle();
-          memberId = counselingEntity.getMemberId();
-          departmentId = counselingEntity.getDepartmentId();
-          counselingContent = counselingEntity.getCounselingContent();
-          counselingDate = counselingEntity.getCounselingDate();
-          counselingImage = base64Img;
-          counselingImageName = counselingEntity.getCounselingImageName();
+        counselingId = counselingEntity.getCounselingId();
+        counselingTitle = counselingEntity.getCounselingTitle();
+        memberId = counselingEntity.getMemberId();
+        departmentId = counselingEntity.getDepartmentId();
+        counselingContent = counselingEntity.getCounselingContent();
+        counselingDate = counselingEntity.getCounselingDate();
+        counselingImage = base64Img;
+        counselingImageName = counselingEntity.getCounselingImageName();
     }
 
-
 }
-

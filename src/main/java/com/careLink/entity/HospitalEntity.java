@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HospitalEntity {
+public class HospitalEntity { //병원 테이블
 
     private int hospitalId; //병원 고유번호
     private String hospitalName; //병원 이름

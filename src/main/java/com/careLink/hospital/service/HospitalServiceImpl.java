@@ -1,74 +1,109 @@
 package com.careLink.hospital.service;
 
-import com.careLink.entity.DoctorInfoEntity;
-import com.careLink.entity.MemberEntity;
+import com.careLink.common.Common;
 import com.careLink.exception.ErrorException;
-import com.careLink.entity.DoctorEntity;
+import com.careLink.hospital.dto.*;
 import com.careLink.hospital.mapper.HospitalMapper;
+import com.careLink.member.dto.ReservationDefaultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Log4j2
-public class HospitalServiceImpl implements HospitalService{
+public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalMapper hospitalMapper;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final Common common;
 
-    public void join(MemberEntity member) { //member테이블에 의사회원정보 저장
+    @Override
+    public int hospitalId(String hAdminId) { //소속 병원 아이디값 가져오기
         try {
-            hospitalMapper.save(member);
+            return hospitalMapper.hospitalId(hAdminId);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "의사 1차 회원가입 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "소속병원이 없습니다.에러");
         }
-
     }
 
-    @Override//의사등록
-    public int signup(DoctorEntity doctor) {
-        log.info("의사등록 서비스 들어옴");
-        String role = "ROLE_DOCTOR"; //의사 권한
-        log.info("입력한 비밀번호 : " + doctor.getPassword());
-        String password = doctor.getPassword(); //비밀번호
-        password = bCryptPasswordEncoder.encode(password); //비밀번호 암호화
-        log.info("시발 제발 --> " + password);
-        //member테이블
+    @Override
+    public List<DoctorListDto> doctorList(int hospitalId) {//의사 목록
+        try {
+            List<DoctorListDto> dList = hospitalMapper.doctorList(hospitalId);
 
-        MemberEntity member = new MemberEntity(doctor.getMemberId(), password, doctor.getMemberName(),
-                                                doctor.getMemberEmail(), doctor.getMemberTel(), doctor.getMemberAddress(), doctor.getMemberAddressDetail(),
-                                                role, 1, doctor.getAgree(), doctor.getAge(), doctor.getGender() );
+            for(DoctorListDto dto : dList) {
+                String base64Img = common.convertImageToBase64(dto.getImgFile());
+                dto.base64Img(base64Img); //byte -> base64이미지로 변경해서 넣어주기
+                dto.imgFileReset(); //byte -> 초기화
+            }
+            return dList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new ErrorException(HttpStatus.BAD_REQUEST.value(), "의사목록 불러오기 실패");
+        }
+    }
 
-        join(member); //의사회원정보 member 테이블에 저장
-        log.info("멤버테이블에는 전송 성공");
-        int memberNo = member.getMemberNo();
-        //의사 정보 테이블
-        DoctorInfoEntity doctorinfo;
+    @Override
+    public List<ReservationInfoDto> reservationList(int hospitalId) { //전체 예약 목록
+        try {
+            return hospitalMapper.reservationList(hospitalId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약목록 불러오기 실패");
+        }
+    }
+
+    @Override
+    public List<ReservationInfoDto> reservationDateList(HospitalAndDateDto haDto) { //해당 날짜 예약 목록
+        try {
+            return hospitalMapper.reservationDateList(haDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약목록 불러오기 실패");
+        }
+    }
+
+    @Override //예약 상세 정보
+    public ReservationInfoDto reservationInfo(HospitalAndReservation haDto) {
+        try {
+            ReservationInfoDto rDto = hospitalMapper.reservationInfo(haDto).orElseThrow(
+                    () ->  new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약 상세 정보 실패" ));
+            return rDto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약 상세 정보 실패");
+        }
+    }
+
+    @Override //의사 상세 정보
+    public DoctorDetailDto doctorDetail(String doctorId) {
+
+        DoctorDetailDto dto = new DoctorDetailDto();
 
         try {
-            if(doctor.getFile() != null && !doctor.getFile().isEmpty()) { //파일이 존재할 떄
-                MultipartFile file = doctor.getFile();
-                String fileName = file.getOriginalFilename();
-                doctorinfo = new DoctorInfoEntity(doctor.getMemberId(), doctor.getDepartmentId(), doctor.getHospitalId(), file.getBytes(), fileName);
-            }
-            else {
-                doctorinfo = new DoctorInfoEntity(doctor.getMemberId(), doctor.getDepartmentId(), doctor.getHospitalId(), null, null);
-            }
-            
-            hospitalMapper.upload(doctorinfo); //의사 정보를 테이블에 저장
-            return memberNo;
+            dto = hospitalMapper.doctorDetail(doctorId).orElseThrow(
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패")
+            );
+            String base64Img = common.convertImageToBase64(dto.getImgFile());
 
+            CountDto countDto = hospitalMapper.doctorCount(doctorId).orElseThrow(
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패")
+            );
+
+            dto.count(base64Img, countDto.getCounselingCount(),countDto.getLikeCount());
+
+            return dto;
         }catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원가입 2차 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
         }
 
     }
+
 }

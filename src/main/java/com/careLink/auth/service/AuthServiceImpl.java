@@ -20,26 +20,24 @@ public class AuthServiceImpl implements AuthService {
 
     //회원가입
     @Override
-    public int signUp(MemberEntity memberEntity) {
+    public String signUp(MemberEntity memberEntity) {
         try {
-            log.info("회원가입 서비스 들어옴");
             String idCheck = memberEntity.getMemberId(); //아이디 중복체크
-            log.info("아이디 : " + idCheck);
             boolean idcheck = fingById(idCheck); //아이디 존재시 예외처리 됨
 
             if (idcheck) {
-                log.info("아이디 중복");
-                return -1; //아이디 중복
+                throw new ErrorException(HttpStatus.CONFLICT.value(), "아이디가 중복임");
             }
 
-            log.info("아이디 중복아님");
             String password = memberEntity.getPassword();
             password = bCryptPasswordEncoder.encode(password); //비밀번호 암호화
             memberEntity.passwordEncoder(password); //암호화한 비밀번호로 교체
 
             authMapper.join(memberEntity);
-            return memberEntity.getMemberNo();
+            return memberEntity.getMemberId();
 
+        } catch (ErrorException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원가입 실패");
