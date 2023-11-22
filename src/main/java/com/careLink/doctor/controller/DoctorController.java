@@ -3,20 +3,16 @@ package com.careLink.doctor.controller;
 import com.careLink.ResultDto;
 import com.careLink.common.Common;
 import com.careLink.doctor.dto.DoctorCounselingListDto;
-import com.careLink.doctor.dto.DoctorDto;
 import com.careLink.doctor.dto.DoctorMyCounselingResultDto;
 import com.careLink.doctor.dto.ReplyDataDto;
 import com.careLink.doctor.service.DoctorService;
-import com.careLink.entity.CounselingPager;
 import com.careLink.member.dto.CounselingDetailResultDto;
 import com.careLink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -54,7 +50,7 @@ public class DoctorController {
 
         int counselingId = doctorService.addReply(replyDataDto.getCounselingId(), id, replyDataDto.getCommentContent());
 
-        return new ResponseEntity<ResultDto>(new ResultDto(true, counselingId + "번 상담에 댓글 등록 성공"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResultDto(true, counselingId + "번 상담에 댓글 등록 성공"), HttpStatus.OK);
     }
 
     @GetMapping("/counselingDetail/{counselingId}") //상담상세정보조회
