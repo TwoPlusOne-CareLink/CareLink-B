@@ -31,16 +31,14 @@ public class CareController {
         return new ResponseEntity<>(hospitalList, HttpStatus.OK);
     }
 
-    //병원 상세 정보
-    @GetMapping("/hospitalInfo/{hospitalId}")
+    @GetMapping("/hospitalInfo/{hospitalId}") //병원 상세 정보
     public ResponseEntity<HospitalDetailResultDto> hospitalDetailResult(@PathVariable("hospitalId") int hospitalId) {
         HospitalDetailResultDto hospitalDetailResultDto = careService.hDetail(hospitalId); //병원아이디로 병원상세정보 조회
 
         return new ResponseEntity<>(hospitalDetailResultDto, HttpStatus.OK);
     }
 
-    //병원 예약 페이지
-    @GetMapping("/hospitalReservation/{hospitalId}") //병원 예약 페이지(
+    @GetMapping("/hospitalReservation/{hospitalId}") //병원 예약 페이지
     public ResponseEntity<ReservationPageDto> reservationPage(@PathVariable("hospitalId") int hospitalId) {
         String memberId = common.memberId();
         ReservationDto dto = new ReservationDto(memberId,hospitalId);
@@ -49,9 +47,7 @@ public class CareController {
         return new ResponseEntity<>(reservationPageDto, HttpStatus.OK);
     }
 
-
-    //병원 예약
-    @PostMapping("/hospitalReservation")
+    @PostMapping("/hospitalReservation") //병원 예약
     public ResponseEntity<ResultDto> reservation(@RequestBody ReservationEntity reservationEntity) {
         String memberId = common.memberId(); //헤더에 담긴 토큰에서 아이디만 가져오는 메소드
         reservationEntity.memberId(memberId); //병원예약정보
@@ -60,8 +56,7 @@ public class CareController {
         return new ResponseEntity<>(new ResultDto(true,"예약 성공 예약번호 : " + reservationId), HttpStatus.OK);
     }
 
-    //일일체크리스트 작성 & 작성목록
-    @GetMapping("/checkList")
+    @GetMapping("/checkList") //일일체크리스트 작성 & 작성목록
     public ResponseEntity<MemberInfoDto> checkList() {
         String memberId = common.memberId(); //헤더에 담긴 토큰에서 아이디만 가져오는 메소드
         MemberInfoDto dto = careService.HealthCheckListPage(memberId);
@@ -69,8 +64,7 @@ public class CareController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    //일일체크리스트 작성
-    @PostMapping("/checkAdd")
+    @PostMapping("/checkAdd") //일일체크리스트 작성
     public ResponseEntity<ResultDto> checkAdd(@RequestBody HealthCheckEntity healthCheckEntity) {
         String memberId = common.memberId(); //헤더에 담긴 토큰에서 아이디만 가져오는 메소드
         healthCheckEntity.setMemberId(memberId); //아이디 값 넣기
@@ -80,8 +74,7 @@ public class CareController {
 
     }
 
-    //일일체크리스트 작성 내역(결과)
-    @GetMapping("/checkListInfo")
+    @GetMapping("/checkListInfo") //일일체크리스트 작성 내역(결과)
     public ResponseEntity<CheckListResultDto> checkListInfo(@RequestParam int checkId) {
         CheckListResultDto dto = careService.ckResult(checkId);
 
