@@ -102,3 +102,5 @@ j
 :src/main/java/com/careLink/hospital/dto/DoctorListDto.java,2\d\2d77644e772a05f534ccb25b640c82e35fac4836
 j
 :src/main/java/com/careLink/member/dto/ModifyMemberDto.java,6\6\6665ee00fc9fded45dc0e475a9e8c322b1639869
+h
+8src/main/java/com/careLink/entity/ReservationEntity.java,4\d\4d903d3e011aef0732cdc361db39df8b37296244
