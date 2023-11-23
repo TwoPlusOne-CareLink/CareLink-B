@@ -36,12 +36,6 @@ public class HospitalServiceImpl implements HospitalService {
     public List<DoctorListDto> doctorList(int hospitalId) {//의사 목록
         try {
             List<DoctorListDto> dList = hospitalMapper.doctorList(hospitalId);
-
-            for(DoctorListDto dto : dList) {
-                String base64Img = common.convertImageToBase64(dto.getImgFile());
-                dto.base64Img(base64Img); //byte -> base64이미지로 변경해서 넣어주기
-                dto.imgFileReset(); //byte -> 초기화
-            }
             return dList;
         } catch (Exception e) {
             e.printStackTrace();

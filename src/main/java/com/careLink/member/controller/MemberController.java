@@ -4,7 +4,6 @@ package com.careLink.member.controller;
 import com.careLink.ResultDto;
 import com.careLink.common.Common;
 import com.careLink.entity.CounselingEntity;
-import com.careLink.entity.CounselingPager;
 import com.careLink.entity.MemberEntity;
 import com.careLink.exception.ErrorException;
 import com.careLink.member.dto.CounselingDetailResultDto;

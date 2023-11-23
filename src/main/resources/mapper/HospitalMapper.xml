@@ -12,14 +12,30 @@
 
     <!-- 의사 목록 -->
     <select id="doctorList" parameterType="int" resultType="DoctorListDto">
-        SELECT M.MEMBER_ID AS DOCTOR_ID, M.MEMBER_NAME AS DOCTORNAME, DI.DEPARTMENT_ID AS DEPARTMENTID,
-               D.DEPARTMENT_NAME AS DEPARTMENTNAME, DI.IMG_FILE AS IMGFILE
-        FROM MEMBER M, DOCTOR_INFO DI, DEPARTMENT D
-        WHERE M.MEMBER_ID = DI.MEMBER_ID
-          AND DI.DEPARTMENT_ID = D.DEPARTMENT_ID
-          AND DI.HOSPITAL_ID = #{hospitalId}
+        SELECT
+                M.MEMBER_ID AS DOCTOR_ID,
+                M.MEMBER_NAME AS DOCTOR_NAME,
+                DI.DEPARTMENT_ID,
+                D.DEPARTMENT_NAME,
+                COUNT(DL.DOCTOR_ID) AS LIKE_COUNT
+        FROM
+            MEMBER M
+                INNER JOIN DOCTOR_INFO DI ON M.MEMBER_ID = DI.MEMBER_ID
+                INNER JOIN DEPARTMENT D ON DI.DEPARTMENT_ID = D.DEPARTMENT_ID
+                LEFT JOIN DOCTOR_LIKE DL ON DL.DOCTOR_ID = M.MEMBER_ID
+        WHERE DI.HOSPITAL_ID = 1
+        GROUP BY M.MEMBER_ID, M.MEMBER_NAME, DI.DEPARTMENT_ID, D.DEPARTMENT_NAME
         ORDER BY DI.DEPARTMENT_ID, M.MEMBER_NAME
     </select>
+<!--    <select id="doctorList" parameterType="int" resultType="DoctorListDto">-->
+<!--        SELECT M.MEMBER_ID AS DOCTOR_ID, M.MEMBER_NAME AS DOCTORNAME, DI.DEPARTMENT_ID AS DEPARTMENTID,-->
+<!--               D.DEPARTMENT_NAME AS DEPARTMENTNAME-->
+<!--        FROM MEMBER M, DOCTOR_INFO DI, DEPARTMENT D-->
+<!--        WHERE M.MEMBER_ID = DI.MEMBER_ID-->
+<!--          AND DI.DEPARTMENT_ID = D.DEPARTMENT_ID-->
+<!--          AND DI.HOSPITAL_ID = #{hospitalId}-->
+<!--        ORDER BY DI.DEPARTMENT_ID, M.MEMBER_NAME-->
+<!--    </select>-->
 
     <!-- 전체 예약 목록 -->
     <select id="reservationList" parameterType="int" resultType="ReservationInfoDto">

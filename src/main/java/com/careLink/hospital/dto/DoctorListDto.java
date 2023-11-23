@@ -8,19 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorListDto {
-    private String doctorId;
-    private String doctorName;
-    private int departmentId;
-    private String departmentName;
-    private byte[] imgFile;
-    private String doctorImg;
-
-    public void base64Img(String base64Img) {
-        doctorImg = base64Img;
-    }
-
-    public void imgFileReset() {
-        imgFile = null;
-    }
-
+    private String doctorId; //의사 아이디
+    private String doctorName; //의사이름
+    private int departmentId; //진료과목 아이디
+    private String departmentName; //진료과목명
+    private int likeCount; //좋아요수
 }

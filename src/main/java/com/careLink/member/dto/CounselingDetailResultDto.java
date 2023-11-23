@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CounselingDetailResultDto {
     private String patientId;
-    private int counseling_id;
+    private int counselingId;
     private String counselingTitle;
     private String counselingContent;
     private String counselingImage;
@@ -25,7 +25,7 @@ public class CounselingDetailResultDto {
 
     public void YesImageToResult(CounselingDetailDto counselingDetailDto, String counSelingBase64Img,String doctorBase64Img) {
         patientId=counselingDetailDto.getPatientId();
-        counseling_id=counselingDetailDto.getCounseling_id();
+        counselingId=counselingDetailDto.getCounselingId();
         counselingTitle=counselingDetailDto.getCounselingTitle();
         counselingContent=counselingDetailDto.getCounselingContent();
         counselingImage= counSelingBase64Img;

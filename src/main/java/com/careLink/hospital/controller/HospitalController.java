@@ -65,7 +65,7 @@ public class HospitalController {
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
-    @GetMapping("/doctorDetail")
+    @GetMapping("/doctorDetail") //의사 상세 조회
     public ResponseEntity<DoctorDetailDto> doctorDetail(@RequestParam String doctorId) {
         log.info("의사 상세 정보");
         DoctorDetailDto dto = hospitalService.doctorDetail(doctorId);

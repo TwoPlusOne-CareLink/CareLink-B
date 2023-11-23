@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CounselingDetailDto {
     private String patientId;
-    private int counseling_id;
+    private int counselingId;
     private String counselingTitle;
     private String counselingContent;
     private byte[] counselingImage;
