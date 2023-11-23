@@ -102,7 +102,6 @@ public class MemberController {
         if (!id.equals(memberDto.getMemberId())) {
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인한 회원의 정보가 아님");
         } else {
-
             String modifyId = memberService.updateMember(memberDto); //업데이트된 행의 수(1이 아니라면 뭔가 잘못된것)
             return new ResponseEntity<>(new ResultDto(true, modifyId + "님의 회원정보 수정 성공"), HttpStatus.OK);
         }
