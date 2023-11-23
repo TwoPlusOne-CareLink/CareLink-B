@@ -65,6 +65,8 @@ public class SecurityConfig {
                 .anyRequest().permitAll() //위에 사이트 외에는 권한다 허용
         );
 
+
+
         return http.build();
     }
 

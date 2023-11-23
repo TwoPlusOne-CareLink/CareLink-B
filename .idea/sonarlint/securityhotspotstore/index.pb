@@ -104,3 +104,5 @@ j
 :src/main/java/com/careLink/member/dto/ModifyMemberDto.java,6\6\6665ee00fc9fded45dc0e475a9e8c322b1639869
 h
 8src/main/java/com/careLink/entity/ReservationEntity.java,4\d\4d903d3e011aef0732cdc361db39df8b37296244
+b
+2src/main/java/com/careLink/member/dto/LikeDto.java,c\9\c935a3234680cda6379e7e98ccdfbf10c1afe4d7

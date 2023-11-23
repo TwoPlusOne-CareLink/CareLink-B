@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
 
         log.info("2");
+        log.info("토큰값 : "  + accessToken);
 
         //유효한 토큰인지 확인
         if(accessToken != null && !accessToken.trim().equals("")) {

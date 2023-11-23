@@ -40,6 +40,7 @@ public class AppUserDetailsService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(member.getRole())); //회원정보에서 권한정보를 가져와서 담는다.
 
         AppUserDetails userDetails = new AppUserDetails(member, authorities);
+
        
         return userDetails;
     }

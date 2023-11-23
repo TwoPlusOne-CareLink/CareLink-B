@@ -6,10 +6,7 @@ import com.careLink.common.Common;
 import com.careLink.entity.CounselingEntity;
 import com.careLink.entity.MemberEntity;
 import com.careLink.exception.ErrorException;
-import com.careLink.member.dto.CounselingDetailResultDto;
-import com.careLink.member.dto.CounselingResultDto;
-import com.careLink.member.dto.GetRequestCounselingDto;
-import com.careLink.member.dto.ModifyMemberDto;
+import com.careLink.member.dto.*;
 import com.careLink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,9 +79,9 @@ public class MemberController {
     }
 
     @PostMapping("/counselingDetail/counselingLike") //상담의사 좋아요
-    public ResponseEntity<ResultDto> clickLike(@RequestParam String doctorId) {
+    public ResponseEntity<ResultDto> clickLike(@RequestBody LikeDto likeDto) {
         String id = common.memberId();
-        int like = memberService.clickLike(id, doctorId);
+        int like = memberService.clickLike(id, likeDto.getDoctorId());
         return like == 1 ? new ResponseEntity<>(new ResultDto(true, "좋아요 추가 성공"), HttpStatus.OK)
                 : new ResponseEntity<>(new ResultDto(true, "좋아요 삭제 성공"), HttpStatus.OK);
     }
