@@ -108,8 +108,6 @@ b
 2src/main/java/com/careLink/member/dto/LikeDto.java,c\9\c935a3234680cda6379e7e98ccdfbf10c1afe4d7
 l
 <src/main/java/com/careLink/member/dto/DuplicateCheckDto.java,d\2\d2ab109a5f9cac3503b25e1480d895770b1f90a9
-q
-Asrc/main/java/com/careLink/member/dto/DoctorProfileResultDto.java,a\5\a5d4af98b5f43829f3deb7501b688157ea3d3184
 l
 <src/main/java/com/careLink/member/dto/HospitalDetailDto.java,9\f\9fbe2eb19c986de8e2d6477fd051523fc43a0dc0
 r

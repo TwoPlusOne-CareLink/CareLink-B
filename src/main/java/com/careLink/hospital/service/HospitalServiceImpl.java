@@ -82,20 +82,20 @@ public class HospitalServiceImpl implements HospitalService {
 
         try {
             dto = hospitalMapper.doctorDetail(doctorId).orElseThrow(
-                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패")
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "11실패")
             );
             String base64Img = common.convertImageToBase64(dto.getImgFile());
 
-            CountDto countDto = hospitalMapper.doctorCount(doctorId).orElseThrow(
-                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패")
-            );
+//            CountDto countDto = hospitalMapper.doctorCount(doctorId).orElseThrow(
+//                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "2실패")
+//            );
 
-            dto.count(base64Img, countDto.getCounselingCount(),countDto.getLikeCount());
-
+//            dto.count(base64Img, countDto.getCounselingCount(),countDto.getLikeCount());
+            dto.count(base64Img);
             return dto;
         }catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "3실패");
         }
 
     }

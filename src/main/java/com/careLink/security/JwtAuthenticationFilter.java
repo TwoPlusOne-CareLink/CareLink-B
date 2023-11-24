@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if(accessToken != null && !accessToken.trim().equals("")) {
             log.info("3");
             if(jwrUtil.validateToken(accessToken)) {
+                log.info("토큰이 있음");
                 //토큰에서 userId 얻기
                 String id = jwrUtil.getId(accessToken); //토큰에서 아이디값 가져오는 메소드 실행해서 아이디 출력
                 //DB에서 userId에 해당하는 정보를 가져오기

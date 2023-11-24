@@ -57,7 +57,7 @@ public class SecurityConfig {
                 //방법1
                 .antMatchers("/user/**").hasAuthority("ROLE_USER") //회원만 가능
                 .antMatchers("/doctor/**").hasAuthority("ROLE_DOCTOR") //의사만 가능
-                .antMatchers("/hoslital/**").hasAuthority("ROLE_ADMIN") //병원 관리자만 가능
+                .antMatchers("/hospital/**").hasAuthority("ROLE_ADMIN") //병원 관리자만 가능
                 //방법2
                 //.antMatchers(HttpMethod.GET, "/board/list").hasAuthority("ROLE_USER") //ROLE_생략하면 안됨
                 //.antMatchers(HttpMethod.POST, "/board/create").hasAnyRole("USER") //ROLE_ 붙이면 안됨

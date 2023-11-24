@@ -15,13 +15,13 @@ public class DoctorDetailDto {
     private String doctorTel; //전화번호
     private String departmentName; //진료과목
     private String hospitalName; //소속병원
-    private int counselingCount;//상담개수
-    private int likeCount; //좋아요 개수
+//    private int counselingCount;//상담개수
+//    private int likeCount; //좋아요 개수
 
-    public void count(String base64Img, int counseling, int like) {
+    public void count(String base64Img) {
         imgFile = null;
         doctorImg = base64Img;
-        counselingCount = counseling;
-        likeCount = like;
+//        counselingCount = counseling;
+//        likeCount = like;
     }
 }
