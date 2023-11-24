@@ -221,32 +221,6 @@ public class CareServiceImpl implements CareService {
         String age = member.getAge(); //910917
         int memberAge = common.age(gender,age);
 
-//        age = gender < 2 ? "19"+age : "20" + age;
-//
-//        // 주민등록번호에서 년도와 월 추출
-//        int birthYear = Integer.parseInt(age.substring(0, 4)); //1900년도
-//        int birthMonth = Integer.parseInt(age.substring(4, 6)); //01월
-//        int birthDay = Integer.parseInt(age.substring(6, 8)); //01일
-//
-//        // 현재 연도를 4자리로 구하기
-//        String currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"));
-//        int year = Integer.parseInt(currentYear);
-//
-//
-//        // 만 나이 계산
-//        int memberAge = year - birthYear; //현재년도 - 생년월일 년도
-//
-//        int nowMonth = LocalDate.now().getMonthValue();
-//        int nowDate = LocalDate.now().getDayOfMonth();
-//
-//        // 생일이 지났는지 체크하여 만 나이 조정
-//        if (nowMonth == birthMonth) { //주민번호상 날짜가 같을 경우
-//            memberAge -= nowDate >= birthDay ? 0 : 1; //생일이 안지났으면 나이 -1
-//        }
-//        if(nowMonth < birthMonth) { //생일이 지났을 경우
-//            memberAge--;
-//        }
-
         String memberGender = (gender%2) == 0 ? "여자" : "남자";
 
         //------------------------------------------------------------------------
