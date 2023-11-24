@@ -118,3 +118,9 @@ k
 ;src/main/java/com/careLink/member/dto/DoctorProfileDto.java,3\a\3a20786c15b8e190e7fe7b91bb2f435e76c601d6
 h
 8src/main/java/com/careLink/member/dto/DepartmentDto.java,5\d\5d16f6f7f8aae43cc58eed874a02ed9953224ed6
+Y
+)src/main/java/com/careLink/ResultDto.java,2\5\25f7a8178742d3859e4f876a39c0cc8f74d19462
+m
+=src/main/java/com/careLink/member/dto/ReservationPageDto.java,4\3\43a8a7d84958cf6da10ba39830c3aca5c0134f14
+p
+@src/main/java/com/careLink/member/dto/ReservationDefaultDto.java,4\5\458858f05dbd347463596be7d6eaa1f6f53db25c
