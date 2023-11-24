@@ -74,6 +74,15 @@ public class CareServiceImpl implements CareService {
         }
     }
 
+    public int hospitalLikeCount(int hospitalId) {
+        try {
+            return careMapper.hospitalLikeCount(hospitalId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 좋아요 계산 실패");
+        }
+    }
+
     @Override
     public HospitalDetailResultDto hDetail(int hospitalId) { //병원상세정보(병원정보,진료과목,의사정보,좋아요수)
         
@@ -103,25 +112,11 @@ public class CareServiceImpl implements CareService {
         }
 
         //의사들의 좋아요 합 = 병원 좋아요
-        //의사들의 좋아요 합 = 병원 좋아요
-        int totalLike = 0;
-        DoctorProfileResultDto rDto;
-        List<DoctorProfileResultDto> doctorProfileResultDtos = new ArrayList<>();
+        int totalLike = hospitalLikeCount(hospitalId); //병원 좋아요 개수
 
         for(DoctorProfileDto dto : doctorProfileDtos) {
-            totalLike += dto.getLikeCount();
-
             String img = common.convertImageToBase64(dto.getImgFile()); //byte -> base64
-
-            rDto = new DoctorProfileResultDto(
-                                                dto.getMemberId(),
-                                                dto.getMemberName(),
-                                                dto.getDepartmentId(),
-                                                img, //byte -> base64
-                                                dto.getFileName(),
-                                                dto.getLikeCount()
-                                             );
-            doctorProfileResultDtos.add(rDto);
+            dto.base64Img(img);
         }
 
 
@@ -137,7 +132,7 @@ public class CareServiceImpl implements CareService {
                                                                 latlng, //위도,경도
                                                                 totalLike, //총 좋아요수(소속의사들의 총 좋아요수)
                                                                 departmentNames, //진료과목들(리스트)
-                                                                doctorProfileResultDtos//의사정보들 (리스트)
+                                                                doctorProfileDtos//의사정보들 (리스트)
                                                             );
         return hospitalDetailResultDto;
     }

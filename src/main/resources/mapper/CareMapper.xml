@@ -58,16 +58,25 @@
             M.MEMBER_ID,
             M.MEMBER_NAME,
             DI.DEPARTMENT_ID,
+            D.DEPARTMENT_NAME,
             DI.IMG_FILE,
-            DI.FILE_NAME,
-            (
-                SELECT COUNT(*)
-                FROM DOCTOR_LIKE DL
-                WHERE DL.DOCTOR_ID = M.MEMBER_ID
-            ) AS LIKE_COUNT
-        FROM MEMBER M, DOCTOR_INFO DI
-        WHERE M.MEMBER_ID = DI.MEMBER_ID AND DI.HOSPITAL_ID = #{hospitalId}
+            DI.FILE_NAME
+        FROM MEMBER M, DOCTOR_INFO DI, DEPARTMENT D
+        WHERE M.MEMBER_ID = DI.MEMBER_ID
+            AND DI.DEPARTMENT_ID = D.DEPARTMENT_ID
+            AND DI.HOSPITAL_ID = #{hospitalId}
         ORDER BY DI.DEPARTMENT_ID, M.MEMBER_ID
+    </select>
+
+    <!-- 병원 상세 정보(병원 좋아요 개수) -->
+    <select id="hospitalLikeCount" parameterType="int" resultType="int">
+        SELECT COUNT(DL.DOCTOR_ID) COUNT
+        FROM DOCTOR_INFO DI, DOCTOR_LIKE DL, HOSPITAL H
+        WHERE H.HOSPITAL_ID = DI.HOSPITAL_ID
+            AND
+            DI.MEMBER_ID = DL.DOCTOR_ID
+            AND
+            H.HOSPITAL_ID = #{hospitalId}
     </select>
 
     <!--병원 예약 중복확인 -->

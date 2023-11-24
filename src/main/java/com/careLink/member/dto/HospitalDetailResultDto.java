@@ -22,5 +22,5 @@ public class HospitalDetailResultDto { //병원 상세정보(리턴해주는 dto
     private LatLngDto latlng; //위도 경오 있는 객체
     private int totalLike; //병원에 속한 의사 좋아요 총 개수
     private List<String> departmentNames; //병원에서 진료하는 진료과목들(DB에서 읽어오고 split(',')해워서 배열로 새로 저장해야함
-    private List<DoctorProfileResultDto> doctorInfo; //의사 정보들
+    private List<DoctorProfileDto> doctorInfo; //의사 정보들
 }

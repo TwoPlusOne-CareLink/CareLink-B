@@ -17,6 +17,7 @@ public interface CareMapper {
     //병원 상세정보(1)
     public HospitalDetailDto hospitalInfo(int hospitalId); //병원정보(+진료과목)
     public List<DoctorProfileDto> doctorProfile(int hospitalId); //병원에 속한 의사들의 정보
+    public int hospitalLikeCount(int hospitalId); //병원 좋아요 개수
 
     //병원예약
     public int check(ReservationEntity reservationEntity);//병원 중복 예약 확인

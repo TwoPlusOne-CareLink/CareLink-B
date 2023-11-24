@@ -34,7 +34,6 @@ public class CareController {
     @GetMapping("/hospitalInfo/{hospitalId}") //병원 상세 정보
     public ResponseEntity<HospitalDetailResultDto> hospitalDetailResult(@PathVariable("hospitalId") int hospitalId) {
         HospitalDetailResultDto hospitalDetailResultDto = careService.hDetail(hospitalId); //병원아이디로 병원상세정보 조회
-
         return new ResponseEntity<>(hospitalDetailResultDto, HttpStatus.OK);
     }
 
