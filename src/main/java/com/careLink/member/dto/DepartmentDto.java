@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DepartmentDto { //진료과목
-    private int departmenetId; //과목번호
+    private int departmentId; //과목번호
     private String departmentName; //과목명
 }

@@ -116,3 +116,5 @@ r
 Bsrc/main/java/com/careLink/member/dto/HospitalDetailResultDto.java,c\a\cac02ad67407b23248bc8a6c343698e5fa832a79
 k
 ;src/main/java/com/careLink/member/dto/DoctorProfileDto.java,3\a\3a20786c15b8e190e7fe7b91bb2f435e76c601d6
+h
+8src/main/java/com/careLink/member/dto/DepartmentDto.java,5\d\5d16f6f7f8aae43cc58eed874a02ed9953224ed6
