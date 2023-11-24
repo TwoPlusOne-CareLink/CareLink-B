@@ -168,6 +168,30 @@ public class CareServiceImpl implements CareService {
         }
     }
 
+    @Override //나의 예약 전체 내역
+    public List<SelectMyReservationDto> getMyReservation(String memberId) {
+        try {
+            List<SelectMyReservationDto> selectMyReservationDto = careMapper.selectMyReservation(memberId);
+            return selectMyReservationDto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "나의 예약 목록 받아오기 실패");
+        }
+    }
+
+    @Override //나의 예약일 예약 내역 조회
+    public SelectMyReservationDto getMyReservationDetail(MyReservationDetailDto myReservationDetailDto) {
+        try {
+            SelectMyReservationDto selectMyReservationDto = careMapper.getMyReservationDetail(myReservationDetailDto).orElseThrow(
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약일 예약내역 조회 예외처리 조회는되지만 빈값")
+            );
+            return selectMyReservationDto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약일 예약 내역 조회 실패");
+        }
+    }
+
     @Override
     public ReservationPageDto reservationPageInfo(ReservationDto dto) { //병원 예약 페이지
 
@@ -209,6 +233,17 @@ public class CareServiceImpl implements CareService {
         }catch (Exception e) {
             e.printStackTrace();
             throw  new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원예약페이지 기본정보 불러오기 실패");
+        }
+
+    }
+
+    @Override //예약 취소
+    public void reservationDelete(int reservationId) {
+        try {
+            careMapper.reservationDelete(reservationId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
         }
 
     }
@@ -312,6 +347,17 @@ public class CareServiceImpl implements CareService {
         checkListResultDto.result(bpResult, bsResult, hrResult, bmiResult);
 
         return checkListResultDto;
+    }
+
+    @Override // 질병백과
+    public List<DiseaseDto> doseaseList() {
+        log.info("질병백과 서비스");
+        try {
+            return careMapper.diseaseList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병백과 조회 실패");
+        }
     }
 
 }

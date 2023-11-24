@@ -122,3 +122,5 @@ m
 =src/main/java/com/careLink/member/dto/ReservationPageDto.java,4\3\43a8a7d84958cf6da10ba39830c3aca5c0134f14
 p
 @src/main/java/com/careLink/member/dto/ReservationDefaultDto.java,4\5\458858f05dbd347463596be7d6eaa1f6f53db25c
+e
+5src/main/java/com/careLink/member/dto/DiseaseDto.java,b\9\b94cf60c3cc1112aabca919bca41237437753ae6

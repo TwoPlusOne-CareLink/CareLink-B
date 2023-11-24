@@ -14,12 +14,21 @@ public interface CareService {
     public HospitalDetailResultDto hDetail(int hospitalId);//병원 상세 목록
 
     //병원 찾기 - 예약
-    public ReservationPageDto reservationPageInfo(ReservationDto dto);//병원 예약 페이지
-    public int Reservation(ReservationEntity reservationEntity);//병원 예약
+    public ReservationPageDto reservationPageInfo(ReservationDto dto); //병원 예약 페이지
+    public int Reservation(ReservationEntity reservationEntity); //병원 예약
+    public List<SelectMyReservationDto> getMyReservation(String memberId); //나의 예약 전체 목록
+    public SelectMyReservationDto getMyReservationDetail(MyReservationDetailDto myReservationDetailDto);
+
+
+
+    public void reservationDelete(int reservationId); //예약 취소
 
     //건강체크
     public MemberInfoDto HealthCheckListPage(String memberId); //체크리스트 작성 & 목록 페이지
     public int HealthCheckAdd(HealthCheckEntity healthCheckEntity); //체크리스트 작성
     public CheckListResultDto ckResult(int checkId); //
+
+    //질병백과
+    public List<DiseaseDto> doseaseList();
 
 }

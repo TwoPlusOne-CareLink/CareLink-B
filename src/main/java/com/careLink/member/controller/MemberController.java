@@ -103,4 +103,5 @@ public class MemberController {
             return new ResponseEntity<>(new ResultDto(true, modifyId + "님의 회원정보 수정 성공"), HttpStatus.OK);
         }
     }
+
 }

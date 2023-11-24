@@ -14,7 +14,7 @@
         VALUES (#{memberNo}, #{memberId}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{memberAddressDetail}, #{role}, #{withdrawal}, #{age}, #{gender})
     </insert>
 
-    <select id="findById" parameterType="String" resultType="com.careLink.entity.MemberEntity">
+    <select id="findById" parameterType="String" resultType="MemberEntity">
         SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId}
     </select>
 

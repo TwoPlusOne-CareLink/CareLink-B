@@ -30,8 +30,6 @@ public class AppUserDetailsService implements UserDetailsService {
         log.info("123");
         //아이디가 존재하는지 여부 확인후 입력한 비밀번호와 아이디로 불러온 회원정보의 비밀번호 값을 대조
         if(member == null) {
-            log.info("아이디가 존재하지 않습니다.");
-//            throw new UsernameNotFoundException(username); //아이디가 없을때 예외처리 403
             throw new ErrorException(HttpStatus.NOT_FOUND.value(), "아이디가 없다"); //로그인 아이디가 없다.
         }
 
@@ -41,7 +39,6 @@ public class AppUserDetailsService implements UserDetailsService {
 
         AppUserDetails userDetails = new AppUserDetails(member, authorities);
 
-       
         return userDetails;
     }
 }

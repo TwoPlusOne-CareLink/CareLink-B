@@ -5,6 +5,7 @@ import com.careLink.entity.HospitalEntity;
 import com.careLink.entity.ReservationEntity;
 import com.careLink.member.dto.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +27,17 @@ public interface CareMapper {
     //병원 예약 페이지
     public Optional<ReservationDefaultDto> rDefaultInfo(ReservationDto reservationDto); //회원정보, 진료과목 정보
     public List<ReservationPageInfoDto> dateInfo (int hospitalId); //병원 에약 정보
+    public List<SelectMyReservationDto> selectMyReservation(@Param("memberId") String memberId);//나의 예약 전체 목록
+    public Optional<SelectMyReservationDto> getMyReservationDetail(MyReservationDetailDto myReservationDetailDto); //예약일 상세 내역
+    public void reservationDelete(int reservationId); //예약 취소
 
     //일일체크리스트
     public List<CheckListInfoDto> checkListPage(String memberId);//일일체크리스트 작성 & 목록 페이지
     public void checkListAdd(HealthCheckEntity healthCheckEntity); //체크리스트 작성 등록
     public int duplicateCheck(DuplicateCheckDto dto); //체크리스트 당일 중복 작성 방지
     public Optional<CheckListResultDto> checkResult(int checkId); //체크리스트 작성내역
+    
+    //질병백과
+    public List<DiseaseDto> diseaseList(); //질병백과
 
 }

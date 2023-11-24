@@ -55,6 +55,28 @@ public class CareController {
         return new ResponseEntity<>(new ResultDto(true,"예약 성공 예약번호 : " + reservationId), HttpStatus.OK);
     }
 
+    @GetMapping("/getMyReservation")//나의 예약 전체 목록
+    public ResponseEntity<List<SelectMyReservationDto>> getReservationList(){
+        String memberId = common.memberId();
+        List<SelectMyReservationDto> myReservation = careService.getMyReservation(memberId);
+        return new ResponseEntity<>(myReservation, HttpStatus.OK);
+    }
+
+    @GetMapping("/getMyReservationDetail") // 나의 예약 전체 내역 & 해당일 예약 내역
+    public ResponseEntity<SelectMyReservationDto> getMyReservationDetail(@RequestParam String reservationDate) {
+        String memberId = common.memberId();
+        MyReservationDetailDto dto = new MyReservationDetailDto(memberId, reservationDate);
+        SelectMyReservationDto myReservation = careService.getMyReservationDetail(dto);
+        return new ResponseEntity<>(myReservation, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/hospitalReservationDelete/{reservationId}") //예약 취소
+    public ResponseEntity<ResultDto> hospitalReservationDelete(@PathVariable int reservationId) {
+        log.info("예약 삭제");
+        careService.reservationDelete(reservationId);
+        return new ResponseEntity<>(new ResultDto(true,"예약취소 성공"), HttpStatus.OK);
+    }
+
     @GetMapping("/checkList") //일일체크리스트 작성 & 작성목록
     public ResponseEntity<MemberInfoDto> checkList() {
         String memberId = common.memberId(); //헤더에 담긴 토큰에서 아이디만 가져오는 메소드
@@ -68,15 +90,20 @@ public class CareController {
         String memberId = common.memberId(); //헤더에 담긴 토큰에서 아이디만 가져오는 메소드
         healthCheckEntity.setMemberId(memberId); //아이디 값 넣기
         int checkId = careService.HealthCheckAdd(healthCheckEntity);
-
         return new ResponseEntity<>(new ResultDto(true,"등록성공 작성번호 --> " + checkId), HttpStatus.OK);
-
     }
 
     @GetMapping("/checkListInfo") //일일체크리스트 작성 내역(결과)
     public ResponseEntity<CheckListResultDto> checkListInfo(@RequestParam int checkId) {
         CheckListResultDto dto = careService.ckResult(checkId);
-
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @GetMapping("/diseaseList") //질병 백과
+    public ResponseEntity<List<DiseaseDto>> doseaseList() {
+        log.info("질병백과 들어옴");
+        List<DiseaseDto> dList = careService.doseaseList();
+        return new ResponseEntity<>(dList,HttpStatus.OK);
+    }
+
 }

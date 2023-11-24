@@ -27,15 +27,6 @@
         GROUP BY M.MEMBER_ID, M.MEMBER_NAME, DI.DEPARTMENT_ID, D.DEPARTMENT_NAME
         ORDER BY DI.DEPARTMENT_ID, M.MEMBER_NAME
     </select>
-<!--    <select id="doctorList" parameterType="int" resultType="DoctorListDto">-->
-<!--        SELECT M.MEMBER_ID AS DOCTOR_ID, M.MEMBER_NAME AS DOCTORNAME, DI.DEPARTMENT_ID AS DEPARTMENTID,-->
-<!--               D.DEPARTMENT_NAME AS DEPARTMENTNAME-->
-<!--        FROM MEMBER M, DOCTOR_INFO DI, DEPARTMENT D-->
-<!--        WHERE M.MEMBER_ID = DI.MEMBER_ID-->
-<!--          AND DI.DEPARTMENT_ID = D.DEPARTMENT_ID-->
-<!--          AND DI.HOSPITAL_ID = #{hospitalId}-->
-<!--        ORDER BY DI.DEPARTMENT_ID, M.MEMBER_NAME-->
-<!--    </select>-->
 
     <!-- 전체 예약 목록 -->
     <select id="reservationList" parameterType="int" resultType="ReservationInfoDto">
@@ -75,12 +66,5 @@
           AND DI.HOSPITAL_ID = H.HOSPITAL_ID
           AND DI.MEMBER_ID = #{doctorId}
     </select>
-
-    <!-- 좋아요, 댓글 수 카운트 -->
-<!--    <select id="doctorCount" parameterType="String" resultType="CountDto">-->
-<!--        SELECT COUNT(CR.MEMBER_ID) AS COUNSELING_COUNT, COUNT(DL.DOCTOR_ID) AS LIKE_COUNT-->
-<!--        FROM COUNSELING_REPLY CR, DOCTOR_LIKE DL-->
-<!--        WHERE CR.MEMBER_ID = #{doctorId} AND DL.DOCTOR_ID = #{doctorId}-->
-<!--    </select>-->
 
 </mapper>
