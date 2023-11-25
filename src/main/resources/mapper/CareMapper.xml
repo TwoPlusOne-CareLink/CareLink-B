@@ -79,12 +79,22 @@
             H.HOSPITAL_ID = #{hospitalId}
     </select>
 
-    <!--병원 예약 중복확인 -->
+
+    <!-- 병원 예약 중복확인(당일 다른예약건이 있는지 확인) -->
+    <select id="dateCheck" parameterType="ReservationEntity" resultType="int">
+        SELECT COUNT(RESERVATION_ID) COUNT
+        FROM RESERVATION
+        WHERE MEMBER_ID = #{memberId}
+          AND
+            TO_DATE(RESERVATION_DATE, 'YY/MM/DD') = #{reservationDate}
+    </select>
+
+    <!--병원 예약 중복확인(병원-날짜-시간-과목) -->
     <select id="check" parameterType="ReservationEntity" resultType="int">
         SELECT COUNT(RESERVATION_ID) COUNT
         FROM RESERVATION
         WHERE HOSPITAL_ID = #{hospitalId}
-                AND RESERVATION_DATE = #{reservationDate}
+                AND TO_DATE(RESERVATION_DATE, 'YY/MM/DD') = #{reservationDate}
                 AND DEPARTMENT_ID = #{departmentId}
                 AND RESERVATION_TIME = #{reservationTime}
     </select>

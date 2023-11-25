@@ -124,3 +124,7 @@ p
 @src/main/java/com/careLink/member/dto/ReservationDefaultDto.java,4\5\458858f05dbd347463596be7d6eaa1f6f53db25c
 e
 5src/main/java/com/careLink/member/dto/DiseaseDto.java,b\9\b94cf60c3cc1112aabca919bca41237437753ae6
+q
+Asrc/main/java/com/careLink/member/dto/SelectMyReservationDto.java,b\7\b778a63a2228d391ce68f8795a91bb74f22efde6
+q
+Asrc/main/java/com/careLink/member/dto/MyReservationDetailDto.java,c\1\c1775c0a618773b927041b45366ba0d7ee908288

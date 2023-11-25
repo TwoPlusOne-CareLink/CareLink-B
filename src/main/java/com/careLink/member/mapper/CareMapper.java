@@ -21,6 +21,7 @@ public interface CareMapper {
     public int hospitalLikeCount(int hospitalId); //병원 좋아요 개수
 
     //병원예약
+    public int dateCheck(ReservationEntity reservationEntity); //당일 다른 예약이 있는지 중복확인(1일 1예약 원칙)
     public int check(ReservationEntity reservationEntity);//병원 중복 예약 확인
     public void reservation(ReservationEntity reservationEntity); //병원 예약 하기
 

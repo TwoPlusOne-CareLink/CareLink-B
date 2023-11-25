@@ -140,10 +140,18 @@ public class CareServiceImpl implements CareService {
     @Override
     public int Reservation(ReservationEntity reservationEntity) { //병원 예약
 
+        int dateCheck = dateCheck(reservationEntity);
+
+        if(dateCheck>0) { //예약 중복
+            log.info("당일이미 예약함");
+            throw new ErrorException(HttpStatus.CONFLICT.value(), "중복된 예약이 존재"); //errorCode:409
+        }
+        
         //에약한 진료 날짜에 해당 진료과목 시간에 예약이 있는지 중복 확인
         int check = ReservationCheck(reservationEntity);
 
         if(check>0) { //예약 중복
+            log.info("다른사람이 예약되어있음");
             throw new ErrorException(HttpStatus.CONFLICT.value(), "중복된 예약이 존재"); //errorCode:409
         }
 
@@ -156,6 +164,15 @@ public class CareServiceImpl implements CareService {
         } catch(Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약 실패"); //errorCode:400
+        }
+    }
+
+    public int dateCheck(ReservationEntity reservationEntity) { //예약중복확인(당일 1일 1예약 원칙)
+        try {
+            return careMapper.dateCheck(reservationEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 예약 중복 확인 실패");
         }
     }
 
