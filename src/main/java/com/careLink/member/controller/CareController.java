@@ -99,11 +99,4 @@ public class CareController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/diseaseList") //질병 백과
-    public ResponseEntity<List<DiseaseDto>> doseaseList() {
-        log.info("질병백과 들어옴");
-        List<DiseaseDto> dList = careService.doseaseList();
-        return new ResponseEntity<>(dList,HttpStatus.OK);
-    }
-
 }

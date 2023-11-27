@@ -122,9 +122,15 @@ m
 =src/main/java/com/careLink/member/dto/ReservationPageDto.java,4\3\43a8a7d84958cf6da10ba39830c3aca5c0134f14
 p
 @src/main/java/com/careLink/member/dto/ReservationDefaultDto.java,4\5\458858f05dbd347463596be7d6eaa1f6f53db25c
-e
-5src/main/java/com/careLink/member/dto/DiseaseDto.java,b\9\b94cf60c3cc1112aabca919bca41237437753ae6
 q
 Asrc/main/java/com/careLink/member/dto/SelectMyReservationDto.java,b\7\b778a63a2228d391ce68f8795a91bb74f22efde6
 q
 Asrc/main/java/com/careLink/member/dto/MyReservationDetailDto.java,c\1\c1775c0a618773b927041b45366ba0d7ee908288
+s
+Csrc/main/java/com/careLink/member/controller/DiseaseContorller.java,3\f\3f63a984efad10a88663e9320e457f9db3a0baa3
+d
+4src/main/java/com/careLink/entity/DiseaseEntity.java,5\1\51b3ae5b7c3ff27981af26628cb793d285665d1f
+g
+7src/main/java/com/careLink/member/dto/ClickLikeDto.java,1\5\15de0c3f37c68ac72b9e7f35840d06c0dafddc94
+c
+3src/main/java/com/careLink/entity/MemberEntity.java,9\0\90923c83e3638023930fc0919e4dc91db9fdb139

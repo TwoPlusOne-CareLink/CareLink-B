@@ -2,10 +2,7 @@ package com.careLink.member.service;
 
 import com.careLink.auth.mapper.AuthMapper;
 import com.careLink.common.Common;
-import com.careLink.entity.HealthCheckEntity;
-import com.careLink.entity.HospitalEntity;
-import com.careLink.entity.MemberEntity;
-import com.careLink.entity.ReservationEntity;
+import com.careLink.entity.*;
 import com.careLink.exception.ErrorException;
 import com.careLink.member.dto.*;
 import com.careLink.member.mapper.CareMapper;
@@ -367,13 +364,25 @@ public class CareServiceImpl implements CareService {
     }
 
     @Override // 질병백과
-    public List<DiseaseDto> doseaseList() {
+    public List<DiseaseEntity> diseaseList() {
         log.info("질병백과 서비스");
         try {
             return careMapper.diseaseList();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병백과 조회 실패");
+        }
+    }
+
+    @Override //질병 상세 정보
+    public DiseaseEntity diseaseDetail(int diseaseId) {
+        try {
+                return careMapper.diseaseDetail(diseaseId).orElseThrow(
+                        () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병 조회 실패(1)")
+                );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병 조회 실패(2)");
         }
     }
 

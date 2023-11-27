@@ -1,5 +1,6 @@
 package com.careLink.member.mapper;
 
+import com.careLink.entity.DiseaseEntity;
 import com.careLink.entity.HealthCheckEntity;
 import com.careLink.entity.HospitalEntity;
 import com.careLink.entity.ReservationEntity;
@@ -39,6 +40,7 @@ public interface CareMapper {
     public Optional<CheckListResultDto> checkResult(int checkId); //체크리스트 작성내역
     
     //질병백과
-    public List<DiseaseDto> diseaseList(); //질병백과
+    public List<DiseaseEntity> diseaseList(); //질병백과
+    public Optional<DiseaseEntity> diseaseDetail(int diseaseId); //질병 상세 정보
 
 }

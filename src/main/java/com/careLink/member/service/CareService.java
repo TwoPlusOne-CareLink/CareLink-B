@@ -1,5 +1,6 @@
 package com.careLink.member.service;
 
+import com.careLink.entity.DiseaseEntity;
 import com.careLink.entity.HealthCheckEntity;
 import com.careLink.entity.ReservationEntity;
 import com.careLink.member.dto.*;
@@ -29,6 +30,7 @@ public interface CareService {
     public CheckListResultDto ckResult(int checkId); //
 
     //질병백과
-    public List<DiseaseDto> doseaseList();
+    public List<DiseaseEntity> diseaseList();
+    public DiseaseEntity diseaseDetail(int diseaseId); //질병 상세 정보
 
 }

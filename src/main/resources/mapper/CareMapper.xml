@@ -274,9 +274,16 @@
     </select>
 
     <!-- 질병백과 -->
-    <select id="diseaseList" resultType="DiseaseDto">
-        SELECT DISEASE_ID, DISEASE_NAME, DEFINITION, CAUSE, SYMPTOM, DIAGNOSIS
+    <select id="diseaseList" resultType="DiseaseEntity">
+        SELECT DISEASE_ID, DISEASE_NAME, DEFINITION, CAUSE, SYMPTOM, DIAGNOSIS, TREATMENT
         FROM DISEASE
+    </select>
+
+    <!-- 질병 상세 정보 -->
+    <select id="diseaseDetail" parameterType="int" resultType="DiseaseEntity">
+        SELECT DISEASE_ID, DISEASE_NAME, DEFINITION, CAUSE, SYMPTOM, DIAGNOSIS, TREATMENT
+        FROM DISEASE
+        WHERE DISEASE_ID = #{diseaseId}
     </select>
 
 </mapper>
