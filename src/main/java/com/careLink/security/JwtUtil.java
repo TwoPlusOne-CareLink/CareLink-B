@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Log4j2
 @Component
-public class JwrUtil {
+public class JwtUtil {
 
     //비밀키(누출되면 안됨)
     private static final String secretKey = "careLink";

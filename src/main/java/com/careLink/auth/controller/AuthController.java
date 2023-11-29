@@ -6,7 +6,7 @@ import com.careLink.auth.dto.LoginResultDto;
 import com.careLink.auth.service.AuthService;
 import com.careLink.entity.MemberEntity;
 import com.careLink.security.AppUserDetails;
-import com.careLink.security.JwrUtil;
+import com.careLink.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
-    private final JwrUtil jwrUtil;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/signup") //일반 회원가입
     public ResponseEntity<ResultDto> signup(@RequestBody MemberEntity memberEntity) {
@@ -54,7 +54,7 @@ public class AuthController {
         //Spring Security에 인증 객체를 등록
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //AccessToken 생성 ---------------------------------------
-        String accessToken = jwrUtil.createToken(signInDto.getMemberId());
+        String accessToken = jwtUtil.createToken(signInDto.getMemberId());
 
         AppUserDetails appUserDetails = (AppUserDetails) authentication.getPrincipal(); //앞에서 로그인해서 얻은 아이디 값의 회원정보 받아오는 메서드(getPrincipal());
         MemberEntity memberEntity = appUserDetails.getMemberEntity();

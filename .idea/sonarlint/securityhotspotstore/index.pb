@@ -36,8 +36,6 @@ h
 8src/main/java/com/careLink/Member/mapper/CareMapper.java,8\7\8721338fad1138ef355614a6c850b71ce54ab8ff
 g
 7src/main/java/com/careLink/security/SecurityConfig.java,1\4\14cb774be007e7e85fcab60bd074b8301197adb5
-`
-0src/main/java/com/careLink/security/JwrUtil.java,d\7\d703f2170d1a6f25272e2f5e0af542ccaac0a150
 n
 >src/main/java/com/careLink/security/AppUserDetailsService.java,8\4\8405e825f1343335d5f7c1b7682439d7055b447b
 p
@@ -134,3 +132,5 @@ g
 7src/main/java/com/careLink/member/dto/ClickLikeDto.java,1\5\15de0c3f37c68ac72b9e7f35840d06c0dafddc94
 c
 3src/main/java/com/careLink/entity/MemberEntity.java,9\0\90923c83e3638023930fc0919e4dc91db9fdb139
+`
+0src/main/java/com/careLink/security/JwtUtil.java,e\d\ede4fa6645833c017b9adda17029d3f71ada6e26

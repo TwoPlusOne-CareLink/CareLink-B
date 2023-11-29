@@ -10,8 +10,12 @@
             SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
         </selectKey>
         <!-- 회원정보 db 전송 -->
-        INSERT INTO MEMBER(MEMBER_NO, MEMBER_ID, PASSWORD, MEMBER_NAME, MEMBER_EMAIL, MEMBER_TEL, MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, ROLE, WITHDRAWAL, AGE, GENDER)
-        VALUES (#{memberNo}, #{memberId}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{memberAddressDetail}, #{role}, #{withdrawal}, #{age}, #{gender})
+        INSERT INTO MEMBER(MEMBER_NO, MEMBER_ID, PASSWORD, MEMBER_NAME, MEMBER_EMAIL, MEMBER_TEL,
+                           MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, ROLE, WITHDRAWAL, AGE, GENDER)
+        VALUES (#{memberNo}, #{memberId}, #{password},
+                #{memberName}, #{memberEmail}, #{memberTel},
+                #{memberAddress}, #{memberAddressDetail}, #{role},
+                #{withdrawal}, #{age}, #{gender})
     </insert>
 
     <select id="findById" parameterType="String" resultType="MemberEntity">
