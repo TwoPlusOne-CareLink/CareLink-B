@@ -50,7 +50,7 @@
     </select>
 
     <!--의사의 진료 과목에 맞는 상담목록 가져오기-->
-    <select id="doctorSelectDCounseling" resultType="CounselingEntity">
+    <select id="doctorSelectCounseling" resultType="CounselingEntity">
         SELECT C.COUNSELING_ID,
                C.COUNSELING_TITLE,
                C.MEMBER_ID,

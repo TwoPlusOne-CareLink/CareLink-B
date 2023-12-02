@@ -23,7 +23,7 @@ public interface DoctorMapper {
 
     public int getDepartmentId(@Param("memberId") String memberId); // 진료과목 번호 받아오기
 
-    public List<CounselingEntity> doctorSelectDCounseling
+    public List<CounselingEntity> doctorSelectCounseling
             (@Param("doctorDepartmentId") int doctorDepartmentId); //자신의 진료과목에 맞는 상담이 필요한 리스트 받아오기
 //            (@Param("pager") CounselingPager pager,@Param("doctorDepartmentId") int doctorDepartmentId); // 위에꺼 페이징
 

@@ -23,32 +23,35 @@ public class AuthServiceImpl implements AuthService {
     public String signUp(MemberEntity memberEntity) {
         try {
             String idCheck = memberEntity.getMemberId(); //아이디 중복체크
-            boolean idcheck = fingById(idCheck); //아이디 존재시 예외처리 됨
-
-            if (idcheck) {
-                throw new ErrorException(HttpStatus.CONFLICT.value(), "아이디가 중복임");
-            }
+//            boolean idcheck = findById(idCheck); //아이디 존재시 예외처리 됨
+            
+            findById(idCheck); //아이디 중복체크
+            
+//            if (idcheck) {
+//                throw new ErrorException(HttpStatus.CONFLICT.value(), "아이디가 중복임");
+//            }
 
             String password = memberEntity.getPassword();
             password = bCryptPasswordEncoder.encode(password); //비밀번호 암호화
             memberEntity.passwordEncoder(password); //암호화한 비밀번호로 교체
 
-            authMapper.join(memberEntity);
-            return memberEntity.getMemberId();
+            authMapper.join(memberEntity); //mepper를 사용해서 DB에 member 테이블에 memberEntity(회원정보) 저장
+            return memberEntity.getMemberId(); //회원고유번호 리턴
 
-        } catch (ErrorException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (Exception e) { //회원가입 실패시 예외처리
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원가입 실패");
         }
     }
 
     //아이디 중복 체크
-    public boolean fingById(String id) {
+    public void findById(String id) {
         try {
-            MemberEntity member = authMapper.findById(id).orElse(null);
-            return member != null ? true : false;
+//            MemberEntity member = authMapper.findById(id).orElse(null);
+//            return member != null ? true : false;
+            MemberEntity member = authMapper.findById(id).orElseThrow(
+                    ()-> new ErrorException(HttpStatus.CONFLICT.value(), "아이디가 중복임")
+            ); //아이디가 중복시 예외처리
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패"); // 회원가입 실패(400)

@@ -29,9 +29,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override //상담신청 페이지(회원정보넣기)
     public GetRequestCounselingDto getCounselingMemberById(String id) {
-        GetRequestCounselingDto getRequestCounselingDto = memberMapper.counselingMemberById(id)
-                .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "상담신청에 넣을 회원정보 가져오기 실패"));
-        return getRequestCounselingDto;
+        try {
+            GetRequestCounselingDto getRequestCounselingDto = memberMapper.counselingMemberById(id)
+                    .orElseThrow(() -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "해당 회원 정보 없음"));
+            return getRequestCounselingDto;
+        } catch (ErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "회원 정보 가져오기 실패");
+        }
     }
 
     @Override //상담신청 저장

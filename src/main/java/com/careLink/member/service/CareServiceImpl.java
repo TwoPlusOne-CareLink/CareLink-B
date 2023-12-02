@@ -303,7 +303,7 @@ public class CareServiceImpl implements CareService {
         try {
             careMapper.checkListAdd(healthCheckEntity);
             return healthCheckEntity.getCheckId();
-        }catch(ErrorException e) { //이미 작성한 예약일 경우 예외 처리
+        }catch(ErrorException e) {
             throw e;
         }
         catch (Exception e) {

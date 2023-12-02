@@ -106,7 +106,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override  // 로그인한 의사의 진료과목에 맞는 댓글 안달린 상담 목록
     public List<DoctorCounselingListDto> doctorGetList(int departmentId) {
         try {
-            List<CounselingEntity> list = doctorMapper.doctorSelectDCounseling(departmentId);
+            List<CounselingEntity> list = doctorMapper.doctorSelectCounseling(departmentId);
             List<DoctorCounselingListDto> resultList = new ArrayList<>();
             String base64Image;
             for (CounselingEntity counselingEntity : list) {

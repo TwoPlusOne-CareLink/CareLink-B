@@ -57,7 +57,7 @@
         ORDER BY R.RESERVATION_DATE, R.RESERVATION_TIME
     </select>
 
-    <!-- 의사 상세 목록 -->
+    <!-- 의사 상세 정보 -->
     <select id="doctorDetail" parameterType="String" resultType="DoctorDetailDto">
         SELECT DI.IMG_FILE, M.MEMBER_ID AS DOCTOR_ID, M.MEMBER_NAME AS DOCTOR_NAME, M.MEMBER_TEL AS DOCTOR_TEL, D.DEPARTMENT_NAME, H.HOSPITAL_NAME
         FROM MEMBER M, DOCTOR_INFO DI, DEPARTMENT D, HOSPITAL H

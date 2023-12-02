@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignInDto {
-    private String memberId;
-    private String password;
+    private String memberId; //로그인 아이디
+    private String password; //로그인 비밀번호
 }

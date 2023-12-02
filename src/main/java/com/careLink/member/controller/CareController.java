@@ -26,8 +26,8 @@ public class CareController {
 
     @GetMapping("/hospitalList") //병원 전체 목록 & 병원 검색
     public ResponseEntity<List<HospitalInfoDto>> hospitalList(@RequestParam String hospitalName) { //hospitalName: all(전체목록), 나머지: 검색 목록
+        log.info("병원 찾기 입니다.");
         List<HospitalInfoDto> hospitalList = careService.hospitalInfo(hospitalName);
-
         return new ResponseEntity<>(hospitalList, HttpStatus.OK);
     }
 
