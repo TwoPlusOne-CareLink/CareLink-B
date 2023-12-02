@@ -134,3 +134,5 @@ c
 3src/main/java/com/careLink/entity/MemberEntity.java,9\0\90923c83e3638023930fc0919e4dc91db9fdb139
 `
 0src/main/java/com/careLink/security/JwtUtil.java,e\d\ede4fa6645833c017b9adda17029d3f71ada6e26
+g
+7src/main/java/com/careLink/auth/dto/LoginResultDto.java,c\3\c33f1879c0aada34d4cb4ef9d6e6013bf1a4db68

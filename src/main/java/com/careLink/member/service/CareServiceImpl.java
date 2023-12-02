@@ -35,8 +35,8 @@ public class CareServiceImpl implements CareService {
             List<HospitalEntity> list = careMapper.hospitalSelect(hospitalName); //전체 병원 목록 불러오기
             List<HospitalInfoDto> hInfo = new ArrayList<>(); //리턴해줄 타입
 
-            for(HospitalEntity he : list) {
-                LatLngDto latLngDto = new LatLngDto(he.getLat(), he.getLng());
+            for(HospitalEntity he : list) { //위도와 경도를 하나의 객체에 담아 전송하기 위해 위에서 list로 불러온 같은 값이지만 한번 더 실행
+                LatLngDto latLngDto = new LatLngDto(he.getLat(), he.getLng()); //따로따로 있는 위도와 경도를 하나의 객체에 담기
                 int hId = he.getHospitalId();
                 String hName = he.getHospitalName();
                 String ad = he.getAddress();
@@ -51,11 +51,10 @@ public class CareServiceImpl implements CareService {
                                         .build();
                 hInfo.add(dto);
             }
-
             return hInfo;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 정보 찾기 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 정보 찾기 실패"); //errorCode: 400
         }
         
     }
@@ -63,7 +62,7 @@ public class CareServiceImpl implements CareService {
     //hDetail 여기서 사용
     public HospitalDetailDto detail(int hosptialId) { //병원정보(+진료과목)
         try {
-            return careMapper.hospitalInfo(hosptialId);
+            return careMapper.hospitalInfo(hosptialId); //병원 상세 정보를 리턴
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -71,12 +70,12 @@ public class CareServiceImpl implements CareService {
         }
     }
 
-    public int hospitalLikeCount(int hospitalId) {
+    public int hospitalLikeCount(int hospitalId) { //병원 좋아요 개수 조회
         try {
             return careMapper.hospitalLikeCount(hospitalId);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 좋아요 계산 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 좋아요 계산 실패"); //errorCode: 400
         }
     }
 
@@ -102,7 +101,7 @@ public class CareServiceImpl implements CareService {
         List<DoctorProfileDto> doctorProfileDtos = new ArrayList<>();
         //의사정보
         try {
-            doctorProfileDtos = careMapper.doctorProfile(hospitalId);
+            doctorProfileDtos = careMapper.doctorProfile(hospitalId); //DB에서 의사정보를 조회해서 doctorProfileDtos에 담기
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원상세정보 의사정보 실패");
@@ -166,30 +165,30 @@ public class CareServiceImpl implements CareService {
 
     public int dateCheck(ReservationEntity reservationEntity) { //예약중복확인(당일 1일 1예약 원칙)
         try {
-            return careMapper.dateCheck(reservationEntity);
+            return careMapper.dateCheck(reservationEntity); //예약조회를 해서 예약된수를 리턴
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 예약 중복 확인 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 예약 중복 확인 실패"); //errorCode:400
         }
     }
 
     public int ReservationCheck(ReservationEntity reservationEntity) { //예약 중복 확인
         try {
-            return careMapper.check(reservationEntity);
+            return careMapper.check(reservationEntity); //같은날, 같은과목, 같은 시간에 예약된 내역이 잇는지 개수 조회
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 예약 중복 확인 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원 예약 중복 확인 실패"); //errorCode:400
         }
     }
 
     @Override //나의 예약 전체 내역
     public List<SelectMyReservationDto> getMyReservation(String memberId) {
         try {
-            List<SelectMyReservationDto> selectMyReservationDto = careMapper.selectMyReservation(memberId);
+            List<SelectMyReservationDto> selectMyReservationDto = careMapper.selectMyReservation(memberId); //memberId로 예약된 모든 에약내역 조회
             return selectMyReservationDto;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "나의 예약 목록 받아오기 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "나의 예약 목록 받아오기 실패"); //errorCode:400
         }
     }
 
@@ -197,12 +196,12 @@ public class CareServiceImpl implements CareService {
     public SelectMyReservationDto getMyReservationDetail(MyReservationDetailDto myReservationDetailDto) {
         try {
             SelectMyReservationDto selectMyReservationDto = careMapper.getMyReservationDetail(myReservationDetailDto).orElseThrow(
-                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약일 예약내역 조회 예외처리 조회는되지만 빈값")
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약일 예약내역 조회 예외처리 조회는되지만 빈값") //errorCode:400
             );
             return selectMyReservationDto;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약일 예약 내역 조회 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "예약일 예약 내역 조회 실패"); //errorCode:400
         }
     }
 
@@ -222,7 +221,7 @@ public class CareServiceImpl implements CareService {
         dList.add(dDto);
 
         for(int i=0; i<departmentIds.length; i++) {
-            dDto = new DepartmentDto(Integer.parseInt(departmentIds[i]), departmentNames[i]);
+            dDto = new DepartmentDto(Integer.parseInt(departmentIds[i]), departmentNames[i]); //진료과목번호화 진료과목명을 새로운 dDto 생성자에 넣어서 아래 리스트에 담기
             dList.add(dDto);
         }
 
@@ -232,7 +231,7 @@ public class CareServiceImpl implements CareService {
             return new ReservationPageDto(rdDto.getMemberName(), rdDto.getMemberTel(), dList, pageList);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원예약 페이지 회원정보 불러오기 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원예약 페이지 회원정보 불러오기 실패"); //errorCode:400
         }
     }
 
@@ -240,13 +239,13 @@ public class CareServiceImpl implements CareService {
 
         try {
             ReservationDefaultDto reservationDefaultDto = careMapper.rDefaultInfo(dto).orElseThrow(
-                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인은 했는데 db에 회원정보가 없다.(원인모르는 에러발생)")
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "로그인은 했는데 db에 회원정보가 없다.(원인모르는 에러발생)") //errorCode:400
             );
             return reservationDefaultDto;
 
         }catch (Exception e) {
             e.printStackTrace();
-            throw  new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원예약페이지 기본정보 불러오기 실패");
+            throw  new ErrorException(HttpStatus.BAD_REQUEST.value(), "병원예약페이지 기본정보 불러오기 실패"); //errorCode:400
         }
 
     }
@@ -257,7 +256,7 @@ public class CareServiceImpl implements CareService {
             careMapper.reservationDelete(reservationId);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패"); //errorCode:400
         }
 
     }
@@ -284,14 +283,14 @@ public class CareServiceImpl implements CareService {
                                      memberAge, memberGender, list);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "체크리스트 항목 조회 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "체크리스트 항목 조회 실패"); //errorCode:400
         }
 
     }
 
     @Override //체크리스트 작성
     public int HealthCheckAdd(HealthCheckEntity healthCheckEntity) {
-        String currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+        String currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yy/MM/dd")); //날짜 형식
         DuplicateCheckDto dto = new DuplicateCheckDto(healthCheckEntity.getMemberId(), currentYear);
 
         int check = duplicateCheck(dto);
@@ -308,7 +307,7 @@ public class CareServiceImpl implements CareService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "등록 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "등록 실패"); //errorCode:400
         }
 
     }
@@ -319,7 +318,7 @@ public class CareServiceImpl implements CareService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "중복체크 검사 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "중복체크 검사 실패"); //errorCode:400
         }
     }
 
@@ -328,11 +327,11 @@ public class CareServiceImpl implements CareService {
         CheckListResultDto checkListResultDto;
         try {
             checkListResultDto = careMapper.checkResult(checkId).orElseThrow(
-                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "작성내역 조회 실패")
+                    () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "작성내역 조회 실패") //errorCode:400
             );
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "실패"); //errorCode:400
         }
 
         String gender = checkListResultDto.getGender(); //성별
@@ -370,7 +369,7 @@ public class CareServiceImpl implements CareService {
             return careMapper.diseaseList();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병백과 조회 실패");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병백과 조회 실패"); //errorCode:400
         }
     }
 
@@ -378,11 +377,11 @@ public class CareServiceImpl implements CareService {
     public DiseaseEntity diseaseDetail(int diseaseId) {
         try {
                 return careMapper.diseaseDetail(diseaseId).orElseThrow(
-                        () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병 조회 실패(1)")
+                        () -> new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병 조회 실패(1)") //errorCode:400
                 );
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병 조회 실패(2)");
+            throw new ErrorException(HttpStatus.BAD_REQUEST.value(), "질병 조회 실패(2)"); //errorCode:400
         }
     }
 

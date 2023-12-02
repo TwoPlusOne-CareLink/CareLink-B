@@ -20,14 +20,12 @@ public class DiseaseContorller {
     private final CareService careService;
     @GetMapping("/diseaseList") //질병 백과
     public ResponseEntity<List<DiseaseEntity>> diseaseList() {
-        log.info("질병백과 들어옴");
         List<DiseaseEntity> dList = careService.diseaseList();
         return new ResponseEntity<>(dList, HttpStatus.OK);
     }
 
     @GetMapping("/diseaseDetail") // 질병 상세 정보
     public ResponseEntity<DiseaseEntity> diseaseDetail(@RequestParam int diseaseId) {
-        log.info("질병 상세 정보");
         DiseaseEntity dto  = careService.diseaseDetail(diseaseId);
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }

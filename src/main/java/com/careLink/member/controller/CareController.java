@@ -57,7 +57,7 @@ public class CareController {
 
     @GetMapping("/getMyReservation")//나의 예약 전체 목록
     public ResponseEntity<List<SelectMyReservationDto>> getReservationList(){
-        String memberId = common.memberId();
+        String memberId = common.memberId(); //헤더에 담긴 토큰에서 아이디만 가져오는 메소드
         List<SelectMyReservationDto> myReservation = careService.getMyReservation(memberId);
         return new ResponseEntity<>(myReservation, HttpStatus.OK);
     }
@@ -72,7 +72,6 @@ public class CareController {
 
     @DeleteMapping("/hospitalReservationDelete/{reservationId}") //예약 취소
     public ResponseEntity<ResultDto> hospitalReservationDelete(@PathVariable int reservationId) {
-        log.info("예약 삭제");
         careService.reservationDelete(reservationId);
         return new ResponseEntity<>(new ResultDto(true,"예약취소 성공"), HttpStatus.OK);
     }
