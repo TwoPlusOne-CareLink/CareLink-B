@@ -95,7 +95,7 @@ public class Common {
         return result;
     }
 
-    public String hrResult(String gender, int age, int heartRate) {
+    public String hrResult(String gender, int age, int heartRate) { //심박수
         String result;
         if(gender.equals("남자")) { //남성
             result = mResult(age,heartRate);
