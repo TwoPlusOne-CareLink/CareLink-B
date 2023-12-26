@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.careLink.member.mapper.MemberMapper">
+
+
+    <!-- 상담을 위해 시큐리티에서 아이디받아와서 회원정보가져오기 -->
+    <select id="counselingMemberById" parameterType="String" resultType="GetRequestCounselingDto">
+        SELECT MEMBER_ID, MEMBER_NAME
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 상담신청 저장 -->
+    <insert id="saveCounseling" parameterType="CounselingEntity">
+        <!-- 상담저장직전 생성되는 상담 고유번호 반환 -->
+        <selectKey keyProperty="counselingId" order="BEFORE" resultType="int">
+            SELECT COUNSELING_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        <!-- 상담 db 전송 -->
+        INSERT INTO COUNSELING(COUNSELING_ID,
+                               COUNSELING_TITLE,
+                               MEMBER_ID,
+                               DEPARTMENT_ID,
+                               COUNSELING_CONTENT,
+                               COUNSELING_IMAGE_NAME,
+                               COUNSELING_IMAGE)
+        VALUES (#{counselingId},
+                #{counselingTitle},
+                #{memberId},
+                #{departmentId},
+                #{counselingContent},
+                #{counselingImageName, jdbcType=VARCHAR},
+                #{counselingImage, jdbcType=BLOB})
+    </insert>
+
+    <!-- 게시글 개수 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM COUNSELING
+    </select>
+
+    <!-- 나의 상담 내역 불러오기-->
+    <select id="selectCounseling" resultType="CounselingEntity">
+
+        SELECT COUNSELING_ID,
+                           COUNSELING_TITLE,
+                           MEMBER_ID,
+                           DEPARTMENT_ID,
+                           COUNSELING_CONTENT,
+                           COUNSELING_DATE,
+                           COUNSELING_IMAGE,
+                           COUNSELING_IMAGE_NAME
+                    FROM COUNSELING
+                    WHERE MEMBER_ID = #{memberId}
+                    ORDER BY COUNSELING_ID DESC
+   </select>
+
+
+<!-- 페이징-->
+    <!--    <select id="selectCounselingByPage" resultType="CounselingEntity">-->
+<!--      <![CDATA[-->
+<!--        SELECT RNUM,-->
+<!--               COUNSELING_ID,-->
+<!--               COUNSELING_TITLE,-->
+<!--               MEMBER_ID,-->
+<!--               DEPARTMENT_ID,-->
+<!--               COUNSELING_CONTENT,-->
+<!--               COUNSELING_DATE,-->
+<!--               COUNSELING_IMAGE,-->
+<!--               COUNSELING_IMAGE_NAME-->
+<!--        FROM (SELECT ROWNUM AS RNUM,-->
+<!--                     COUNSELING_ID,-->
+<!--                     COUNSELING_TITLE,-->
+<!--                     MEMBER_ID,-->
+<!--                     DEPARTMENT_ID,-->
+<!--                     COUNSELING_CONTENT,-->
+<!--                     COUNSELING_DATE,-->
+<!--                     COUNSELING_IMAGE,-->
+<!--                     COUNSELING_IMAGE_NAME-->
+<!--              FROM (SELECT COUNSELING_ID,-->
+<!--                           COUNSELING_TITLE,-->
+<!--                           MEMBER_ID,-->
+<!--                           DEPARTMENT_ID,-->
+<!--                           COUNSELING_CONTENT,-->
+<!--                           COUNSELING_DATE,-->
+<!--                           COUNSELING_IMAGE,-->
+<!--                           COUNSELING_IMAGE_NAME-->
+<!--                    FROM COUNSELING-->
+<!--                    WHERE MEMBER_ID = #{memberId}-->
+<!--                    ORDER BY COUNSELING_ID DESC)-->
+<!--              WHERE ROWNUM <= #{pager.endRowNo})-->
+<!--        WHERE RNUM >= #{pager.startRowNo}-->
+<!--        ]]>-->
+<!--   </select>-->
+
+    <!-- 상담에 댓글이 달렸나 확인-->
+    <select id="checkReply">
+        SELECT COUNT(*)
+        FROM COUNSELING_REPLY
+        WHERE COUNSELING_ID = #{counselingId}
+    </select>
+
+    <!-- 댓글이 없는 나의 상담 상세 정보 불러오기-->
+    <select id="noReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
+        SELECT C.MEMBER_ID AS PATIENT_ID,
+               C.COUNSELING_ID,
+               C.COUNSELING_TITLE,
+               C.COUNSELING_CONTENT,
+               C.COUNSELING_IMAGE,
+               C.COUNSELING_IMAGE_NAME,
+               R.REPLY_ID
+        FROM COUNSELING C
+                 LEFT JOIN
+             COUNSELING_REPLY R ON C.COUNSELING_ID = R.COUNSELING_ID
+        WHERE C.COUNSELING_ID = #{counselingId}
+    </select>
+
+    <!-- 댓글이 있을때 내 상담 상세 정보-->
+    <select id="yesReplyCounselingDetail" parameterType="int" resultType="CounselingDetailDto">
+        SELECT M.MEMBER_ID    AS PATIENT_ID,        -- 환자 아이디
+               C.COUNSELING_ID,                     -- 상담 고유 번호
+               C.COUNSELING_TITLE,                  -- 상담 제목
+               C.COUNSELING_CONTENT,                -- 상담 내용
+               C.COUNSELING_IMAGE,                  -- 상담 이미지
+               C.COUNSELING_IMAGE_NAME,             -- 상담 이미지 이름
+               D.IMG_FILE     AS DOCTOR_IMAGE,      -- 의사 이미지
+               D.FILE_NAME    AS DOCTOR_IMAGE_NAME, -- 의사 이미지 이름
+               DM.MEMBER_ID   AS DOCTOR_ID,         -- 의사 아이디
+               DM.MEMBER_NAME AS DOCTOR_NAME,       -- 의사 이름
+               DEPARTMENT.DEPARTMENT_NAME,          -- 의사 진료과목
+               CR.REPLY_ID,                         -- 댓글 고유번호
+               CR.COMMENT_CONTENT,                  -- 댓글 내용
+               CASE
+                   WHEN DL.DOCTOR_ID IS NOT NULL THEN 1 -- 좋아요가 있다면 1 표시
+                   ELSE 0 -- 좋아요가 없다면 0 표시
+                   END        AS LIKED_BY_PATIENT   -- 환자가 의사를 좋아요 눌렀는지 여부
+        FROM COUNSELING C
+                 JOIN
+             MEMBER M ON C.MEMBER_ID = M.MEMBER_ID
+                 JOIN
+             COUNSELING_REPLY CR ON C.COUNSELING_ID = CR.COUNSELING_ID
+                 JOIN
+             DOCTOR_INFO D ON CR.MEMBER_ID = D.MEMBER_ID
+                 JOIN
+             MEMBER DM ON D.MEMBER_ID = DM.MEMBER_ID
+                 JOIN
+             DEPARTMENT ON D.DEPARTMENT_ID = DEPARTMENT.DEPARTMENT_ID
+                 LEFT JOIN
+             DOCTOR_LIKE DL ON DM.MEMBER_ID = DL.DOCTOR_ID AND M.MEMBER_ID = DL.MEMBER_ID
+        WHERE C.COUNSELING_ID = #{counselingId}
+    </select>
+
+<!--   좋아요 확인 -->
+    <select id="checkLike" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM DOCTOR_LIKE
+        WHERE MEMBER_ID = #{memberId}
+          AND DOCTOR_ID = #{doctorId}
+    </select>
+<!-- 좋아요 추가-->
+    <insert id="insertLike">
+        <selectKey keyProperty="likeId" order="BEFORE" resultType="int">
+            SELECT DOCTOR_LIKE_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO DOCTOR_LIKE (LIKE_ID,MEMBER_ID, DOCTOR_ID)
+        VALUES ( #{likeId},#{memberId}, #{doctorId})
+    </insert>
+<!-- 좋아요 삭제 -->
+    <delete id="deleteLike" parameterType="String">
+        DELETE
+        FROM DOCTOR_LIKE
+        WHERE MEMBER_ID = #{memberId}
+          AND DOCTOR_ID = #{doctorId}
+    </delete>
+<!--회원정보 받기-->
+    <select id="selectMemberInfo" parameterType="String" resultType="MemberEntity">
+        SELECT MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_ADDRESS, MEMBER_ADDRESS_DETAIL, MEMBER_TEL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+<!--회원정보 수정-->
+    <update id="modifyMember" parameterType="String">
+        update member
+        set password= #{password},
+            MEMBER_EMAIL=#{memberEmail},
+            MEMBER_ADDRESS=#{memberAddress},
+            MEMBER_ADDRESS_DETAIL=#{memberAddressDetail},
+            MEMBER_TEL=#{memberTel}
+        where member_id = #{memberId}
+    </update>
+
+</mapper>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.careLink.doctor.mapper.DoctorMapper">
+
+    <!--의사 회원가입(성민) -->
+    <insert id="save">
+        <!-- 회원가입 후 생성되는 회원 고유번호 반환 -->
+        <selectKey keyProperty="memberNo" order="BEFORE" resultType="int">
+            SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        <!-- 의사회원정보 db 전송 -->
+        INSERT INTO MEMBER(MEMBER_NO, MEMBER_ID, PASSWORD, MEMBER_NAME,  MEMBER_EMAIL, MEMBER_TEL, MEMBER_ADDRESS, MEMBER_ADDRESS_Detail, ROLE, WITHDRAWAL, AGE, GENDER)
+        VALUES (#{memberNo}, #{memberId}, #{password}, #{memberName}, #{memberEmail}, #{memberTel}, #{memberAddress}, #{memberAddressDetail}, #{role}, #{withdrawal}, #{age}, #{gender})
+    </insert>
+
+    <!--의사 정보 테이블에(성민) 저장 -->
+    <insert id="upload" parameterType="DoctorInfoDto">
+        <selectKey keyProperty="infoId" resultType="int" order="BEFORE">
+            SELECT INFO_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO DOCTOR_INFO(INFO_ID, MEMBER_ID, DEPARTMENT_ID, HOSPITAL_ID, IMG_FILE, FILE_NAME)
+        VALUES (#{infoId}, #{memberId}, #{departmentId}, #{hospitalId}, #{imgFile, jdbcType=BLOB},
+        #{fileName, jdbcType=VARCHAR})
+    </insert>
+
+    <!--    댓글이 안달린 상담 개수 가져오기-->
+    <select id="noReplyCount" resultType="int">
+        SELECT COUNT(*)
+        FROM COUNSELING C
+                 LEFT JOIN COUNSELING_REPLY CR
+                           ON C.COUNSELING_ID = CR.COUNSELING_ID
+        WHERE CR.REPLY_ID IS NULL
+          and c.department_id = #{departmentId}
+    </select>
+
+    <!--    자신이 댓글 단 상담 목록 개수 가져오기-->
+    <select id="myReplyCount" resultType="int">
+        SELECT COUNT(*)
+        from COUNSELING_REPLY
+        where member_id =#{doctorId}
+    </select>
+
+
+    <!--  로그인한 의사의 진료 과목 번호 가져오기-->
+    <select id="getDepartmentId" resultType="int" parameterType="String">
+        SELECT DEPARTMENT_ID
+        FROM DOCTOR_INFO
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!--의사의 진료 과목에 맞는 상담목록 가져오기-->
+    <select id="doctorSelectCounseling" resultType="CounselingEntity">
+        SELECT C.COUNSELING_ID,
+               C.COUNSELING_TITLE,
+               C.MEMBER_ID,
+               C.DEPARTMENT_ID,
+               C.COUNSELING_CONTENT,
+               C.COUNSELING_DATE,
+               C.COUNSELING_IMAGE,
+               C.COUNSELING_IMAGE_NAME
+        FROM COUNSELING C
+                 LEFT JOIN COUNSELING_REPLY R ON C.COUNSELING_ID = R.COUNSELING_ID
+        WHERE R.REPLY_ID IS NULL
+          AND C.DEPARTMENT_ID= #{doctorDepartmentId}
+        ORDER BY COUNSELING_ID DESC
+    </select>
+<!--    <select id="doctorSelectDCounselingByPage" resultType="CounselingEntity">-->
+<!--        <![CDATA[-->
+<!--        SELECT C.COUNSELING_ID,-->
+<!--               C.COUNSELING_TITLE,-->
+<!--               C.MEMBER_ID,-->
+<!--               C.DEPARTMENT_ID,-->
+<!--               C.COUNSELING_CONTENT,-->
+<!--               C.COUNSELING_DATE,-->
+<!--               C.COUNSELING_IMAGE,-->
+<!--               C.COUNSELING_IMAGE_NAME-->
+<!--        FROM (SELECT ROWNUM AS RNUM,-->
+<!--                     COUNSELING_ID,-->
+<!--                     COUNSELING_TITLE,-->
+<!--                     MEMBER_ID,-->
+<!--                     DEPARTMENT_ID,-->
+<!--                     COUNSELING_CONTENT,-->
+<!--                     COUNSELING_DATE,-->
+<!--                     COUNSELING_IMAGE,-->
+<!--                     COUNSELING_IMAGE_NAME-->
+<!--              FROM (SELECT COUNSELING_ID,-->
+<!--                           COUNSELING_TITLE,-->
+<!--                           MEMBER_ID,-->
+<!--                           DEPARTMENT_ID,-->
+<!--                           COUNSELING_CONTENT,-->
+<!--                           COUNSELING_DATE,-->
+<!--                           COUNSELING_IMAGE,-->
+<!--                           COUNSELING_IMAGE_NAME-->
+<!--                    FROM COUNSELING-->
+<!--                    ORDER BY COUNSELING_ID DESC)-->
+<!--              WHERE ROWNUM <= #{pager.endRowNo}) C-->
+<!--                 LEFT JOIN COUNSELING_REPLY R ON C.COUNSELING_ID = R.COUNSELING_ID-->
+<!--        WHERE R.REPLY_ID IS NULL-->
+<!--          AND C.RNUM >= #{pager.startRowNo}-->
+<!--          AND C.DEPARTMENT_ID = #{doctorDepartmentId}-->
+<!--        ]]>-->
+<!--    </select>-->
+
+    <!--   자신이 작성한 댓글의 게시물 목록 -->
+    <select id="doctorSelectMyCounseling" resultType="DoctorMyCounselingDto">
+        select C.COUNSELING_ID,
+               C.COUNSELING_TITLE,
+               C.COUNSELING_CONTENT,
+               C.COUNSELING_IMAGE,
+               C.COUNSELING_IMAGE_NAME
+        FROM COUNSELING C
+                 JOIN COUNSELING_REPLY R
+                      ON C.COUNSELING_ID = R.COUNSELING_ID AND R.MEMBER_ID = #{doctorId}
+        ORDER BY COUNSELING_ID DESC
+    </select>
+
+<!--    SELECT C.COUNSELING_ID,-->
+<!--    C.COUNSELING_TITLE,-->
+<!--    C.MEMBER_ID,-->
+<!--    C.DEPARTMENT_ID,-->
+<!--    C.COUNSELING_CONTENT,-->
+<!--    C.COUNSELING_DATE,-->
+<!--    C.COUNSELING_IMAGE,-->
+<!--    C.COUNSELING_IMAGE_NAME-->
+<!--    FROM (SELECT ROWNUM AS RNUM,-->
+<!--    COUNSELING_ID,-->
+<!--    COUNSELING_TITLE,-->
+<!--    MEMBER_ID,-->
+<!--    DEPARTMENT_ID,-->
+<!--    COUNSELING_CONTENT,-->
+<!--    COUNSELING_DATE,-->
+<!--    COUNSELING_IMAGE,-->
+<!--    COUNSELING_IMAGE_NAME-->
+<!--    FROM (SELECT COUNSELING_ID,-->
+<!--    COUNSELING_TITLE,-->
+<!--    MEMBER_ID,-->
+<!--    DEPARTMENT_ID,-->
+<!--    COUNSELING_CONTENT,-->
+<!--    COUNSELING_DATE,-->
+<!--    COUNSELING_IMAGE,-->
+<!--    COUNSELING_IMAGE_NAME-->
+<!--    FROM COUNSELING-->
+<!--    ORDER BY COUNSELING_ID DESC)-->
+<!--    WHERE ROWNUM <= #{pager.endRowNo}) C-->
+<!--    LEFT JOIN COUNSELING_REPLY R ON C.COUNSELING_ID = R.COUNSELING_ID-->
+<!--    WHERE R.REPLY_ID IS NULL-->
+<!--    AND C.RNUM >= #{pager.startRowNo}-->
+<!--    AND C.DEPARTMENT_ID = #{doctorId}-->
+
+
+    <!--    댓글등록-->
+    <insert id="insertReply" >
+        <selectKey keyProperty="replyId" order="BEFORE" resultType="int">
+            SELECT COUNSELING_REPLY_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        insert into counseling_reply (reply_id,counseling_id,member_id,comment_content)
+        values (#{replyId},#{counselingId},#{memberId},#{commentContent})
+    </insert>
+</mapper>

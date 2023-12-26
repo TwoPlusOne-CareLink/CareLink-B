@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.careLink.hospital.mapper.HospitalMapper">
+
+    <!-- 병원 아이디 -->
+    <select id="hospitalId" parameterType="String" resultType="int">
+        SELECT HOSPITAL_ID
+        FROM HOSPITAL_INFO
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 의사 목록 -->
+    <select id="doctorList" parameterType="int" resultType="DoctorListDto">
+        SELECT
+                M.MEMBER_ID AS DOCTOR_ID,
+                M.MEMBER_NAME AS DOCTOR_NAME,
+                DI.DEPARTMENT_ID,
+                D.DEPARTMENT_NAME,
+                COUNT(DL.DOCTOR_ID) AS LIKE_COUNT
+        FROM
+            MEMBER M
+                INNER JOIN DOCTOR_INFO DI ON M.MEMBER_ID = DI.MEMBER_ID
+                INNER JOIN DEPARTMENT D ON DI.DEPARTMENT_ID = D.DEPARTMENT_ID
+                LEFT JOIN DOCTOR_LIKE DL ON DL.DOCTOR_ID = M.MEMBER_ID
+        WHERE DI.HOSPITAL_ID = 1
+        GROUP BY M.MEMBER_ID, M.MEMBER_NAME, DI.DEPARTMENT_ID, D.DEPARTMENT_NAME
+        ORDER BY DI.DEPARTMENT_ID, M.MEMBER_NAME
+    </select>
+
+    <!-- 전체 예약 목록 -->
+    <select id="reservationList" parameterType="int" resultType="ReservationInfoDto">
+        SELECT R.RESERVATION_ID, R.MEMBER_ID, R.HOSPITAL_ID, R.DEPARTMENT_ID, R.RESERVATION_DATE, R.RESERVATION_TIME, R.RESERVATION_MEMBER,
+               R.RESERVATION_TEL, R.RESERVATION_CONTENT, D.DEPARTMENT_NAME
+        FROM RESERVATION R, DEPARTMENT D
+        WHERE R.HOSPITAL_ID = #{hospitalId} AND R.DEPARTMENT_ID = D.DEPARTMENT_ID
+        ORDER BY R.RESERVATION_DATE, R.RESERVATION_TIME
+    </select>
+
+    <!-- 해당 예약일 예약 목록 -->
+    <select id="reservationDateList" parameterType="HospitalAndDateDto" resultType="ReservationInfoDto">
+        SELECT R.RESERVATION_ID, R.MEMBER_ID, R.HOSPITAL_ID, R.DEPARTMENT_ID, R.RESERVATION_DATE, R.RESERVATION_TIME, R.RESERVATION_MEMBER,
+               R.RESERVATION_TEL, R.RESERVATION_CONTENT, D.DEPARTMENT_NAME
+        FROM RESERVATION R
+                 JOIN DEPARTMENT D ON R.DEPARTMENT_ID = D.DEPARTMENT_ID
+        WHERE R.HOSPITAL_ID = #{hospitalId} AND TO_DATE(RESERVATION_DATE, 'YY/MM/DD') = #{reservationDate}
+        ORDER BY R.RESERVATION_DATE, R.RESERVATION_TIME
+    </select>
+
+    <!-- 예약 상세 정보 -->
+    <select id="reservationInfo" parameterType="HospitalAndReservation" resultType="ReservationInfoDto">
+        SELECT R.RESERVATION_ID, R.MEMBER_ID, R.HOSPITAL_ID, R.DEPARTMENT_ID, R.RESERVATION_DATE, R.RESERVATION_TIME, R.RESERVATION_MEMBER,
+               R.RESERVATION_TEL, R.RESERVATION_CONTENT, D.DEPARTMENT_NAME
+        FROM RESERVATION R
+            JOIN DEPARTMENT D ON R.DEPARTMENT_ID = D.DEPARTMENT_ID
+        WHERE R.HOSPITAL_ID = #{hospitalId} AND R.RESERVATION_ID = #{reservationId}
+        ORDER BY R.RESERVATION_DATE, R.RESERVATION_TIME
+    </select>
+
+    <!-- 의사 상세 정보 -->
+    <select id="doctorDetail" parameterType="String" resultType="DoctorDetailDto">
+        SELECT DI.IMG_FILE, M.MEMBER_ID AS DOCTOR_ID, M.MEMBER_NAME AS DOCTOR_NAME, M.MEMBER_TEL AS DOCTOR_TEL, D.DEPARTMENT_NAME, H.HOSPITAL_NAME
+        FROM MEMBER M, DOCTOR_INFO DI, DEPARTMENT D, HOSPITAL H
+        WHERE M.MEMBER_ID = DI.MEMBER_ID
+          AND DI.DEPARTMENT_ID = D.DEPARTMENT_ID
+          AND DI.HOSPITAL_ID = H.HOSPITAL_ID
+          AND DI.MEMBER_ID = #{doctorId}
+    </select>
+
+</mapper>
